@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PazUp - Image and Video Upscale Using Topaz API</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="loginPage" class="login-page" style="display:none;">
+        <div class="login-card">
+            <div class="login-logo"><img src="assets/icon.png" alt="PazUp Logo"></div>
+            <h1 class="login-title">PazUp</h1>
+
+            <div class="input-group login-input-group">
+                <label for="licenseEmail">License Email</label>
+                <input type="email" id="licenseEmail" placeholder="Enter your license email">
+            </div>
+
+            <div id="licenseStatus" class="login-status"></div>
+
+            <button id="loginEnterBtn" class="btn btn-primary login-submit-btn">Login</button>
+        </div>
+    </div>
+    <div class="app-container">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Configuration Panel -->
+            <section class="config-panel">
+                <div class="config-panel-header">
+                    <h2>Configuration</h2>
+                    <div class="config-panel-header-actions">
+                        <button id="licenseInfoBtn" class="btn btn-secondary">License</button>
+                        <button id="logoutBtn" class="btn btn-danger">Logout</button>
+                    </div>
+                </div>
+
+                <!-- API Key -->
+                <div class="input-group">
+                    <label for="apiKey">Topaz API Key:</label>
+                    <div class="input-with-button">
+                        <input type="password" id="apiKey" placeholder="Enter your Topaz API key">
+                        <button id="addApiKey" class="btn btn-secondary">+ ADD KEY</button>
+                    </div>
+                </div>
+
+                <!-- API Keys -->
+                <div class="api-keys-section">
+                    <div class="section-header">
+                        <label>Topaz API Keys:</label>
+                    </div>
+                    <div id="apiKeysList" class="api-keys-list">
+                        <!-- API keys will be dynamically added here -->
+                    </div>
+                </div>
+
+                <!-- Folders -->
+                <div class="folder-section">
+                    <div class="input-group">
+                        <label for="inputFolder">Input Folder:</label>
+                        <div class="input-with-button">
+                            <input type="text" id="inputFolder" placeholder="Select folder containing video files" readonly>
+                            <button id="selectInputFolder" class="btn btn-secondary">Browse</button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="outputFolder">Output Folder:</label>
+                        <div class="input-with-button">
+                            <input type="text" id="outputFolder" placeholder="Select output folder" readonly>
+                            <button id="selectOutputFolder" class="btn btn-secondary">Browse</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media Type Selection -->
+                <div class="media-type-section">
+                    <div class="tab-container">
+                        <button id="videoTab" class="tab-button active" data-type="video">
+                            Video Upscale
+                        </button>
+                        <button id="imageTab" class="tab-button" data-type="image">
+                            Image Upscale
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Video Processing Options -->
+                <div id="videoOptions" class="options-section media-options active">
+                    <div class="option-row">
+                        <div class="input-group">
+                            <label for="model">Upscale Model:</label>
+                            <select id="model">
+                                <option value="prob-4">Proteus (prob-4) - General</option>
+                                <option value="ahq-12">Artemis (ahq-12) - High Quality</option>
+                                <option value="amq-13">Artemis (amq-13) - Medium Quality</option>
+                                <option value="alq-13">Artemis (alq-13) - Low Quality</option>
+                                <option value="nyx-3">Nyx (nyx-3) - General</option>
+                                <option value="nxf-1">Nyx (nxf-1) - Fast</option>
+                                <option value="rhea-1">Rhea (rhea-1) - General</option>
+                                <option value="ghq-5">Gaia (ghq-5) - High Quality</option>
+                                <option value="gcg-5">Gaia (gcg-5) - Computer Generated</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="frameInterpolation">Frame Interpolation:</label>
+                            <select id="frameInterpolation">
+                                <option value="apo-8">Apollo (apo-8) - General</option>
+                                <option value="apf-2">Apollo (apf-2) - Fast</option>
+                                <option value="chr-2">Chronos (chr-2) - General</option>
+                                <option value="chf-3">Chronos (chf-3) - Fast</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="option-row">
+                        <div class="input-group">
+                            <label for="resolution">Target Resolution:</label>
+                            <select id="resolution">
+                                <option value="1920x1080">Full HD (1920x1080)</option>
+                                <option value="2560x1440">2K (2560x1440)</option>
+                                <option value="3840x2160">4K (3840x2160)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="removeAudio">Remove Audio:</label>
+                            <select id="removeAudio">
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="option-row">
+                        <div class="input-group">
+                            <label for="slowMotion">Slow Motion:</label>
+                            <select id="slowMotion">
+                                <option value="1">None</option>
+                                <option value="2">2x</option>
+                                <option value="3">3x</option>
+                                <option value="4">4x</option>
+                                <option value="5">5x</option>
+                                <option value="6">6x</option>
+                                <option value="7">7x</option>
+                                <option value="8">8x</option>
+                                <option value="9">9x</option>
+                                <option value="10">10x</option>
+                                <option value="11">11x</option>
+                                <option value="12">12x</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="cropToFit">Crop To Fit:</label>
+                            <select id="cropToFit">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="option-row">
+                        <div class="input-group">
+                            <label for="workers">Workers (50 Max):</label>
+                            <input type="number" id="workers" min="1" max="50" value="2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Processing Options -->
+                <div id="imageOptions" class="options-section media-options" style="display: none;">
+                    <div class="option-row">
+                        <div class="input-group">
+                            <label for="imageModel">Image Model:</label>
+                            <select id="imageModel">
+                                <option value="Standard V2">Standard V2 - General purpose</option>
+                                <option value="Low Resolution V2">Low Resolution V2 - Web graphics & screenshots</option>
+                                <option value="High Fidelity V2">High Fidelity V2 - Professional photography</option>
+                                <option value="CGI">CGI - Digital illustrations</option>
+                                <option value="Text Refine">Text Refine - Images with text</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="outputFormat">Output Format:</label>
+                            <select id="outputFormat">
+                                <option value="jpeg">JPEG</option>
+                                <option value="png">PNG</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="option-row">
+                        <div class="input-group">
+                            <label for="outputWidth">Target Resolution:</label>
+                            <select id="outputWidth">
+                                <option value="1920">Full HD (1920x1080)</option>
+                                <option value="2560">2K (2560x1440)</option>
+                                <option value="3840">4K (3840x2160)</option>
+                                <option value="7680">8K (7680x4320)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="imageQuality">JPEG Quality (%):</label>
+                            <input type="range" id="imageQuality" min="50" max="100" value="95">
+                            <span id="qualityValue">95%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="refreshFiles" class="btn btn-secondary">Refresh Files</button>
+                    <button id="startUpscale" class="btn btn-primary">Start Upscale</button>
+                    <button id="pauseUpscale" class="btn btn-warning" style="display: none;">Pause</button>
+                    <button id="resumeUpscale" class="btn btn-success" style="display: none;">Resume</button>
+                    <button id="stopUpscale" class="btn btn-danger" style="display: none;">Stop</button>
+                </div>
+            </section>
+
+            <!-- Video Files and Processing -->
+            <section class="processing-panel">
+                <div class="panel-header">
+                    <h2>File List</h2>
+                    <div class="file-count">
+                        <span id="fileCount">0 files found</span>
+                    </div>
+                </div>
+
+                <!-- Video Files List -->
+                <div class="video-files-container">
+                    <div id="videoFilesList" class="video-files-list">
+                        <div class="empty-state">
+                            <p>Select an input folder to see video files</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Queue -->
+                <div class="processing-queue">
+                    <h3>Processing List</h3>
+                    <div id="processingList" class="processing-list">
+                        <div class="empty-state">
+                            <p>No processing tasks</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-info">
+                <span id="statusText">Ready</span>
+            </div>
+            <div class="status-actions">
+                <span id="activeProcesses">0 active processes</span>
+            </div>
+        </footer>
+    </div>
+
+    <div id="licenseModal" class="license-modal" style="display:none;">
+        <div class="license-modal-card">
+            <h2 class="license-modal-title">License Information</h2>
+            <div id="licenseModalContent" class="license-modal-content">
+            </div>
+            <div class="license-modal-actions">
+                <button id="licenseModalClose" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

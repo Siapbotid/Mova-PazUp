@@ -1,0 +1,118 @@
+{
+  "name": "pazup",
+  "version": "1.0.7",
+  "description": "Image and Video Upscale Using Topaz API",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron . --disable-gpu",
+    "dev": "set NODE_ENV=development && electron . --disable-gpu",
+    "build": "npm run force-clean && electron-builder --win",
+    "dist": "npm run force-clean && electron-builder --win --publish=never",
+    "pack": "npm run force-clean && electron-builder --win --dir",
+    "setup": "node create-icon.js && npm install",
+    "clean": "npm run force-clean",
+    "force-clean": "taskkill /f /im PazUp.exe 2>nul & taskkill /f /im VidUp.exe 2>nul & taskkill /f /im electron.exe 2>nul & taskkill /f /im ffmpeg.exe 2>nul & timeout /t 2 /nobreak > nul & rmdir /s /q dist 2>nul & rmdir /s /q release 2>nul & echo Cleaned successfully",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "video",
+    "upscale",
+    "topaz",
+    "electron",
+    "ai"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4",
+    "rimraf": "^5.0.5"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "form-data": "^4.0.0",
+    "fs-extra": "^11.1.0"
+  },
+  "build": {
+    "appId": "com.pazup.app",
+    "productName": "PazUp",
+    "directories": {
+      "output": "release"
+    },
+    "extraResources": [
+      {
+        "from": "ffmpeg-binaries/",
+        "to": "ffmpeg/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "files": [
+      "**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

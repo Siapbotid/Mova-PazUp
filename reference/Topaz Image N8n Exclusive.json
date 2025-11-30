@@ -1,0 +1,983 @@
+{
+  "name": "Topaz Image N8n Exclusive",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "#  Upscale Image Topaz",
+        "height": 384,
+        "width": 916,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3c86f3ed-f70b-4bf9-b73c-5b7537bcb14f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Hanya 3 Node ini yang di Setting",
+        "height": 272,
+        "width": 540,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        400
+      ],
+      "id": "7bfe9cba-a8a2-45ed-b043-a1540b13887a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Format Folder\nSettingan Folder cek di Telegram [Klik disini](https://t.me/sanz_exclusive/4)",
+        "height": 96,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        560
+      ],
+      "id": "4a6542ea-8b92-4107-91bb-c184a1762007",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Upload File\nGanti menu Parent Folder (Ganti ke FOLDER Kamu) ke Folder yang sudah kamu buat di Gdrive sebagai Tempat Hasil Generate Video",
+        "height": 112,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        400
+      ],
+      "id": "bc25664d-1fe4-405e-9c48-729eeb767461",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "='{{ $json[\"URL Folder Image\"].split(\"/\").pop().split(\"?\")[0] }}' in parents \nand not name contains '(Selesai)' \nand not name contains '(Tdk bisa di Proses)' \nand mimeType contains 'image' \nand trashed = false",
+        "returnAll": true,
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        272,
+        144
+      ],
+      "id": "8312197e-2441-4b75-b49a-86760de610ec",
+      "name": "Search files and folders",
+      "retryOnFail": false,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "KjfoY8ddNYsKHBzs",
+          "name": "1 Tahun"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e36139ce-a412-44ff-a288-29c4641a63d6",
+              "name": "URL Folder Image",
+              "value": "Input Url Folder Image Kamu",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1888,
+        496
+      ],
+      "id": "fe61e840-3632-4a92-abd1-85cb29249ef8",
+      "name": "Input URL Folder Image"
+    },
+    {
+      "parameters": {
+        "url": "https://api.topazlabs.com/account/v1/credits/balance",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "={{ $('Api Key').item.json.ApiKey }}"
+            },
+            {
+              "name": "Accept",
+              "value": "*/*"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        784,
+        928
+      ],
+      "id": "f158ed0a-b767-4c91-8edf-f90f62880feb",
+      "name": "Credits"
+    },
+    {
+      "parameters": {
+        "url": "=https://drive.google.com/uc?export=download&id={{ $('Loop Over Items1').item.json.id }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "input"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        64,
+        544
+      ],
+      "id": "bd8a6e7f-3851-4fc1-a156-f936b79ec851",
+      "name": "Get Image"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Input Url Apikey').item.json['Url Api Key'] }}",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        64,
+        928
+      ],
+      "id": "c41a6289-a4e8-487a-b900-b4fd3afbc76b",
+      "name": "Api Key",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CqnKL9umHvrM5EKU",
+          "name": "Cookie Api Key"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allCookies = $input.all();\nconst randomIndex = Math.floor(Math.random() * allCookies.length);\nreturn [allCookies[randomIndex]];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        928
+      ],
+      "id": "cf5c7f57-9def-47e5-a544-2ea1abab4b93",
+      "name": "Randoom"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4049c26b-e1c9-47b4-9d32-010ec379bc34",
+              "name": "Apikey",
+              "value": "={{ $json.ApiKey }}",
+              "type": "string"
+            },
+            {
+              "id": "3c12de3f-7db5-4264-8568-5d0e74b34956",
+              "name": "Credits",
+              "value": "={{ $json.Credits }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        928
+      ],
+      "id": "78fcc91c-689b-4492-b5f0-544b20e9c493",
+      "name": "Rotasi Apikey"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.topazlabs.com/image/v1/enhance",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "={{ $('Rotasi Apikey').item.json.Apikey }}"
+            },
+            {
+              "name": "accept",
+              "value": "image/jpeg"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "output_width",
+              "value": "3840"
+            },
+            {
+              "name": "crop_to_fill",
+              "value": "false"
+            },
+            {
+              "name": "output_format",
+              "value": "jpeg"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "input"
+            },
+            {
+              "name": "model",
+              "value": "Standard V2"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "enhanced_image"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        624,
+        416
+      ],
+      "id": "030dd975-070f-4a22-bac8-8c9c571960c1",
+      "name": "Upacale Image Topaz",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4049c26b-e1c9-47b4-9d32-010ec379bc34",
+              "name": "id",
+              "value": "={{ $('Loop Over Items1').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        928
+      ],
+      "id": "4349e53e-c82a-4d94-a10f-1606033873bc",
+      "name": "Ambil ID"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Input Url Apikey').item.json['Url Api Key'] }}",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ApiKey": "={{ $('Api Key').item.json.ApiKey }}",
+            "Credits": "={{ $json.available_credits }}"
+          },
+          "matchingColumns": [
+            "ApiKey"
+          ],
+          "schema": [
+            {
+              "id": "ApiKey",
+              "displayName": "ApiKey",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Credits",
+              "displayName": "Credits",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        976,
+        928
+      ],
+      "id": "bbef5c81-2a03-4fd3-86a6-c0c5c4086483",
+      "name": "Update Credits",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CqnKL9umHvrM5EKU",
+          "name": "Cookie Api Key"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        192,
+        1072
+      ],
+      "id": "1e4d91bd-2633-4410-94a8-5be0e4c5bc75",
+      "name": "Wait",
+      "webhookId": "686e93e3-f627-47db-8ebf-013e9d62ff67"
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        1072
+      ],
+      "id": "a354d1aa-9551-4ee2-91aa-00f5723b7c32",
+      "name": "Wait3",
+      "webhookId": "686e93e3-f627-47db-8ebf-013e9d62ff67"
+    },
+    {
+      "parameters": {
+        "content": "## Upscale Image",
+        "height": 340,
+        "width": 908,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        400
+      ],
+      "id": "e29fda2f-6108-4f7d-b68b-74f3aed0478e",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## Update Status",
+        "height": 448,
+        "width": 1360,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        800
+      ],
+      "id": "299d1b17-140d-4a18-a97e-a3abd58bc22b",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "enhanced_image",
+        "name": "=Upscale-{{ $('Loop Over Items1').item.json.name.split('.').slice(0, -1).join('-') }}.jpeg",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1ohVY8OL6H-Dxlu1pAYbgk7c-Jegqt5S-",
+          "mode": "list",
+          "cachedResultName": "Ganti ke FOLDER Kamu",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1ohVY8OL6H-Dxlu1pAYbgk7c-Jegqt5S-"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1552,
+        496
+      ],
+      "id": "f4193bd6-6b62-4891-b75c-09b74019ebe0",
+      "name": "Upload file1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "KjfoY8ddNYsKHBzs",
+          "name": "1 Tahun"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Loop Over Items1').item.json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "=(Selesai) {{ $('Loop Over Items1').item.json.name }}",
+        "options": {
+          "trashed": true
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        496,
+        144
+      ],
+      "id": "ed1f5255-5f5d-4959-a0e4-de50be4419d8",
+      "name": "Update file1",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "KjfoY8ddNYsKHBzs",
+          "name": "1 Tahun"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -432,
+        544
+      ],
+      "id": "e479e95b-8956-44a7-83f2-8ee0cff805b6",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2a85aa2-63cb-49ca-a46c-327d15177ff2",
+              "name": "Url Api Key",
+              "value": "Input Url ApiKey Kamu",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1728,
+        496
+      ],
+      "id": "d5a2b8b0-7dc1-4062-a78c-388e8d02a825",
+      "name": "Input Url Apikey"
+    },
+    {
+      "parameters": {
+        "formTitle": "Setting Output Size",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Output",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "4K"
+                  },
+                  {
+                    "option": "8K"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        144
+      ],
+      "id": "a1c6ddf9-124a-4428-83ca-54f4df6b7d07",
+      "name": "On form submission",
+      "webhookId": "e1f5ea7c-895b-4a07-b37d-b5c6433c03c9"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dc405bfb-3d78-4724-a026-24dfc47f41bd",
+              "leftValue": "={{ $('On form submission').item.json.Output }}",
+              "rightValue": "4K",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        544
+      ],
+      "id": "03e071dc-79c0-4741-9f97-cb4eca4402eb",
+      "name": "If14"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.topazlabs.com/image/v1/enhance",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "={{ $('Rotasi Apikey').item.json.Apikey }}"
+            },
+            {
+              "name": "accept",
+              "value": "image/jpeg"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "output_width",
+              "value": "7680"
+            },
+            {
+              "name": "crop_to_fill",
+              "value": "false"
+            },
+            {
+              "name": "output_format",
+              "value": "jpeg"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "input"
+            },
+            {
+              "name": "model",
+              "value": "Standard V2"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "enhanced_image"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        624,
+        592
+      ],
+      "id": "abdc2ab8-d48b-4b38-9862-573fa3168e1c",
+      "name": "Upacale Image Topaz1",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "# Cara ambil API Key Topaz. [Klik disini](https://drive.google.com/drive/u/0/folders/1PN_o7V0vvk4OYrZ9isW3KjuNjaIBJeN1)",
+        "height": 128,
+        "width": 528
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        240
+      ],
+      "id": "2d8d64a5-5a60-4dad-a94f-0530712733d3",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Input URL Folder Image": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Credits": {
+      "main": [
+        [
+          {
+            "node": "Update Credits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Image": {
+      "main": [
+        [
+          {
+            "node": "If14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Api Key": {
+      "main": [
+        [
+          {
+            "node": "Randoom",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Randoom": {
+      "main": [
+        [
+          {
+            "node": "Rotasi Apikey",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rotasi Apikey": {
+      "main": [
+        [
+          {
+            "node": "Ambil ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upacale Image Topaz": {
+      "main": [
+        [
+          {
+            "node": "Upload file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Api Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil ID": {
+      "main": [
+        [
+          {
+            "node": "Credits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Credits": {
+      "main": [
+        [
+          {
+            "node": "Get Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Api Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Update Credits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file1": {
+      "main": [
+        [
+          {
+            "node": "Update file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update file1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Api Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input Url Apikey": {
+      "main": [
+        [
+          {
+            "node": "Input URL Folder Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If14": {
+      "main": [
+        [
+          {
+            "node": "Upacale Image Topaz",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Upacale Image Topaz1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upacale Image Topaz1": {
+      "main": [
+        [
+          {
+            "node": "Upload file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Api Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Input Url Apikey",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "87abd91a-9f48-4a48-9d4f-2df2f62a86a6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "62c87e8b168c7ec91252c0994d7820d1ca6fe5538b562feac1afb17d42c5929b"
+  },
+  "id": "4h2IqWD22iN9uMWQ",
+  "tags": []
+}

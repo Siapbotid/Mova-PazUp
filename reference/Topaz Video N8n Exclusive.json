@@ -1,0 +1,1120 @@
+{
+  "name": "Topaz Video N8n Exclusive",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "#  Upscale Video Topaz (4K 60FPS Auto Mute)",
+        "height": 384,
+        "width": 916,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ede4e932-a0e6-4a19-a557-19883725ae5d",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Hanya 3 Node ini yang di Setting",
+        "height": 256,
+        "width": 540,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        448
+      ],
+      "id": "7da1ca43-028d-454f-8407-aa88fd1a8bb7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Format Folder\nSettingan Folder cek di Telegram [Klik disini](https://t.me/sanz_exclusive/4)",
+        "height": 96,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2752,
+        592
+      ],
+      "id": "e49fdc53-06a2-470f-baa9-63a0d7d91050",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Upload File\nGanti menu Parent Folder (Ganti ke FOLDER Kamu) ke Folder yang sudah kamu buat di Gdrive sebagai Tempat Hasil Generate Video",
+        "height": 112,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2752,
+        432
+      ],
+      "id": "042064a2-923f-4f3a-9867-1060610d7dbf",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "='{{ $json[\"URL Folder Input Video\"].split(\"/\").pop().split(\"?\")[0] }}' in parents \nand not name contains '(Selesai)' \nand not name contains '(Tdk bisa di Proses)' \nand mimeType contains 'mp4' \nand trashed = false",
+        "returnAll": true,
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        512,
+        144
+      ],
+      "id": "dd70c2a7-819c-41f1-ad50-7158ffb68db6",
+      "name": "Search files and folders",
+      "retryOnFail": false,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "KjfoY8ddNYsKHBzs",
+          "name": "1 Tahun"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.topazlabs.com/account/v1/credits/balance",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "={{ $('Api Key').item.json.ApiKey }}"
+            },
+            {
+              "name": "Accept",
+              "value": "*/*"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        784,
+        928
+      ],
+      "id": "92feec1c-4496-41df-8196-9959994d6100",
+      "name": "Credits"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Input Url Apikey').item.json['Url Api Key'] }}",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        64,
+        928
+      ],
+      "id": "b728732b-151c-41fe-bd7b-237f7ad7769e",
+      "name": "Api Key",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CqnKL9umHvrM5EKU",
+          "name": "Cookie Api Key"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allCookies = $input.all();\nconst randomIndex = Math.floor(Math.random() * allCookies.length);\nreturn [allCookies[randomIndex]];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        928
+      ],
+      "id": "f8368b2c-1dc8-446a-9318-b37b4726fff5",
+      "name": "Randoom"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4049c26b-e1c9-47b4-9d32-010ec379bc34",
+              "name": "Apikey",
+              "value": "={{ $json.ApiKey }}",
+              "type": "string"
+            },
+            {
+              "id": "3c12de3f-7db5-4264-8568-5d0e74b34956",
+              "name": "Credits",
+              "value": "={{ $json.Credits }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        928
+      ],
+      "id": "710d438c-bdc4-4f1a-b19c-322ba94edc1f",
+      "name": "Rotasi Apikey"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4049c26b-e1c9-47b4-9d32-010ec379bc34",
+              "name": "id",
+              "value": "={{ $('Loop Over Items1').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        928
+      ],
+      "id": "048e388c-0b90-4c63-8bcf-9eacfbcfcdcf",
+      "name": "Ambil ID"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Input Url Apikey').item.json['Url Api Key'] }}",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ApiKey": "={{ $('Api Key').item.json.ApiKey }}",
+            "Credits": "={{ $json.available_credits }}"
+          },
+          "matchingColumns": [
+            "ApiKey"
+          ],
+          "schema": [
+            {
+              "id": "ApiKey",
+              "displayName": "ApiKey",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Credits",
+              "displayName": "Credits",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        976,
+        928
+      ],
+      "id": "a23c738f-b8be-421a-812e-6e133803ae6d",
+      "name": "Update Credits",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CqnKL9umHvrM5EKU",
+          "name": "Cookie Api Key"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        192,
+        1072
+      ],
+      "id": "a7c4078b-f8b8-4ba1-8f1c-459ce91864d6",
+      "name": "Wait",
+      "webhookId": "92771b72-4330-4c47-9500-dd49c8760702"
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        1072
+      ],
+      "id": "d55a1d37-0bff-46bb-9235-c40540fb96b1",
+      "name": "Wait3",
+      "webhookId": "9fba98d4-0052-4387-a3f1-c7d486600924"
+    },
+    {
+      "parameters": {
+        "content": "## Update Status",
+        "height": 448,
+        "width": 1360,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        800
+      ],
+      "id": "ecf09f04-c811-46b7-a765-c11be58d2cd8",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Loop Over Items1').item.json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "=(Selesai) {{ $('Loop Over Items1').item.json.name }}",
+        "options": {
+          "trashed": true
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        736,
+        144
+      ],
+      "id": "0293011a-7267-45c6-83f2-da6c53062757",
+      "name": "Update file1",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "KjfoY8ddNYsKHBzs",
+          "name": "1 Tahun"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -432,
+        544
+      ],
+      "id": "30d5ede6-af76-4405-a9dd-8fa508e84be0",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2a85aa2-63cb-49ca-a46c-327d15177ff2",
+              "name": "Url Api Key",
+              "value": "Input Url ApiKey Kamu",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2400,
+        528
+      ],
+      "id": "5bea1e6f-0e0d-45aa-9073-6ae5bac7e272",
+      "name": "Input Url Apikey"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.topazlabs.com/video/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "={{ $('Rotasi Apikey').item.json.Apikey }}"
+            },
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"source\": {\n    \"resolution\": {\n      \"width\": 1280,\n      \"height\": 720\n    },\n    \"container\": \"mp4\",\n    \"size\": 1,\n    \"duration\": 1,\n    \"frameCount\": 1,\n    \"frameRate\": 30\n  },\n  \"filters\": [\n    {\n      \"model\": \"prob-4\"\n    },\n    {\n      \"model\": \"chf-3\",\n      \"slowmo\": {{ $('Code in JavaScript').item.json.output }},\n      \"fps\": 60,\n      \"duplicate\": false\n    }\n  ],\n  \"output\": {\n    \"frameRate\": 30,\n    \"audioTransfer\": \"None\",\n    \"audioCodec\": \"AAC\",\n    \"videoEncoder\": \"H264\",\n    \"videoProfile\": \"High\",\n    \"dynamicCompressionLevel\": \"High\",\n    \"resolution\": {\n      \"width\": 3840,\n      \"height\": 2160\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        48,
+        512
+      ],
+      "id": "2d0c2a6d-3633-44d8-b1d8-11c82f36d09e",
+      "name": "Create a Video Request",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.topazlabs.com/video/{{ $('Create a Video Request').item.json.requestId }}/accept",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "X-API-Key",
+              "value": "={{ $('Rotasi Apikey').item.json.Apikey }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        272,
+        512
+      ],
+      "id": "bce8636f-8ce2-4998-b7a1-dcf9bf210126",
+      "name": "Accept",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://drive.google.com/uc?export=download&id={{ $('Loop Over Items1').item.json.id }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "Input Video"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        512
+      ],
+      "id": "96d8bf1c-86aa-405e-b583-35904a50b883",
+      "name": "Get File"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $('Accept').item.json.urls[0] }}",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "Input Video",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "Response"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        608,
+        512
+      ],
+      "id": "f3a30755-1c7c-4545-90af-a99553b218be",
+      "name": "Upload the Video Request",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "maxTries": 5
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.topazlabs.com/video/{{ $('Create a Video Request').item.json.requestId }}/complete-upload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "X-API-Key",
+              "value": "={{ $('Rotasi Apikey').item.json.Apikey }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"uploadResults\": [\n    {\n      \"partNum\": 1,\n      \"eTag\": {{ $json.headers.etag }}\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        752,
+        512
+      ],
+      "id": "a09fe84d-7a82-41e0-8222-4e4c56a0e296",
+      "name": "Complete the Video Upload"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.topazlabs.com/video/{{ $('Create a Video Request').item.json.requestId }}/status",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "X-API-Key",
+              "value": "={{ $('Rotasi Apikey').item.json.Apikey }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        944,
+        512
+      ],
+      "id": "de6f36e9-fb90-43fa-b003-c5c3684381c8",
+      "name": "Get the Video Status"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "68a2121c-9d80-45d0-8334-74451c7eb891",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "complete",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1136,
+        512
+      ],
+      "id": "2b1922b4-08e1-4308-a382-f0b3810213ae",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1360,
+        624
+      ],
+      "id": "03dcd768-cdbe-4d18-a4c4-b24be006cd39",
+      "name": "Wait6",
+      "webhookId": "f7b103ae-67e5-469a-8e7f-b64a654d3d87"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get the Video Status').item.json.download.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "Upscale"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1360,
+        464
+      ],
+      "id": "3b9b7d42-e720-45fe-bec8-ffc0534fcb18",
+      "name": "Get Video"
+    },
+    {
+      "parameters": {
+        "content": "## Upscale Video",
+        "height": 324,
+        "width": 1596,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        432
+      ],
+      "id": "da722065-28d6-4cfe-923a-5c1c322c707a",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "Upscale",
+        "name": "=4K-60fps-Upscale-{{ $('Loop Over Items1').item.json.name.split('.').slice(0, -1).join('-') }}.mp4",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1ohVY8OL6H-Dxlu1pAYbgk7c-Jegqt5S-",
+          "mode": "list",
+          "cachedResultName": "Ganti ke FOLDER Kamu",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1ohVY8OL6H-Dxlu1pAYbgk7c-Jegqt5S-"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2224,
+        528
+      ],
+      "id": "a9abbed7-1321-455c-b428-90d106fff72b",
+      "name": "Upload file",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "KjfoY8ddNYsKHBzs",
+          "name": "1 Tahun"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e36139ce-a412-44ff-a288-29c4641a63d6",
+              "name": "URL Folder Input Video",
+              "value": "Input Url Folder Video Kamu",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2560,
+        528
+      ],
+      "id": "eef6d555-48d6-45d1-b8df-6852309c9f7b",
+      "name": "URL Folder Input Video"
+    },
+    {
+      "parameters": {
+        "jsCode": "let slowMotion;\n\n// Use optional chaining to safely attempt to read the property\n// It will set slowMotion to 'undefined' instead of crashing\nslowMotion = $('On form submission').item?.json?.data?.['Slow Motion'];\n\n// Fallback attempt in case the structure is simpler\nif (slowMotion === undefined) {\n    slowMotion = $input.first().json['Slow Motion'];\n}\n\nlet output;\n\nif (slowMotion === 'None') {\n  output = 1;\n} else if (slowMotion === '2X') {\n  output = 2;\n} else {\n  // If slowMotion is undefined, null, or any other value\n  // it will land here and output will be null.\n  output = null;\n}\n\nreturn { output: output };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        144
+      ],
+      "id": "5d31c08b-c12d-466b-848a-578b52c6dbfd",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "formTitle": "Form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Slow Motion",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "None"
+                  },
+                  {
+                    "option": "2X"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        32,
+        144
+      ],
+      "id": "3307c09a-6304-40d2-a6d6-21bade51e883",
+      "name": "On form submission",
+      "webhookId": "dc8dff0d-8fd2-485b-ab51-cd0c5bdcd64c"
+    },
+    {
+      "parameters": {
+        "content": "# Cara ambil API Key Topaz. [Klik disini](https://drive.google.com/drive/u/0/folders/1PN_o7V0vvk4OYrZ9isW3KjuNjaIBJeN1)",
+        "height": 128,
+        "width": 528
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        256
+      ],
+      "id": "05098e4a-b51b-4c73-9c70-d7aafabda570",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Credits": {
+      "main": [
+        [
+          {
+            "node": "Update Credits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Api Key": {
+      "main": [
+        [
+          {
+            "node": "Randoom",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Randoom": {
+      "main": [
+        [
+          {
+            "node": "Rotasi Apikey",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rotasi Apikey": {
+      "main": [
+        [
+          {
+            "node": "Ambil ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil ID": {
+      "main": [
+        [
+          {
+            "node": "Credits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Credits": {
+      "main": [
+        [
+          {
+            "node": "Create a Video Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Api Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Update Credits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update file1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Api Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input Url Apikey": {
+      "main": [
+        [
+          {
+            "node": "URL Folder Input Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a Video Request": {
+      "main": [
+        [
+          {
+            "node": "Accept",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Api Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Accept": {
+      "main": [
+        [
+          {
+            "node": "Get File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Api Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get File": {
+      "main": [
+        [
+          {
+            "node": "Upload the Video Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload the Video Request": {
+      "main": [
+        [
+          {
+            "node": "Complete the Video Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Complete the Video Upload": {
+      "main": [
+        [
+          {
+            "node": "Get the Video Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the Video Status": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Get Video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait6": {
+      "main": [
+        [
+          {
+            "node": "Get the Video Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Video": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Update file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL Folder Input Video": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Input Url Apikey",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "79440791-1d09-453a-b9fd-acdfcf217b0a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "62c87e8b168c7ec91252c0994d7820d1ca6fe5538b562feac1afb17d42c5929b"
+  },
+  "id": "uJZeNWxrOz9Uis5W",
+  "tags": []
+}

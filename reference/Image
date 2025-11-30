@@ -1,0 +1,335 @@
+# Introduction
+
+### Overview
+
+Welcome to the Topaz Labs Image API!
+
+Our image enhancement APIs offer world-class capabilities such as:
+
+* **Upscale:** Output high-resolution images from low resolution input files.
+* **Face Recovery:** Ensure high quality facial details in every image.
+* **Sharpen:** Bring images into focus, unblurring the subject or entire image.
+* **Denoise:** Get clean images by removing sensor noise and grain.
+* **More:** We have many other AI models under the hood of our image applications. You can reach out to us at <enterprise@topazlabs.com> to learn more about what's possible.
+
+All of our AI models are developed in house by our team of PhD researchers in Dallas, Texas.\
+Topaz AI models focus on unparalleled:
+
+* **Quality:** Industry-defining quality fit for professional use cases ranging from Hollywood to AAA game studios to pro photographers.
+* **Fidelity:** Preserve the original details and identities in the source images with Topaz Labs models better than any other offering in the industry.
+* **Efficiency:** Low per-image cost with maximum speed for enhancing thousands or even millions of images at a time.
+
+In general, Topaz Labs offers two classes of AI models:
+
+* **Standard:** These models are incredibly fast and efficient, and preserve the original fidelity and details of source images with maximum accuracy. *Recommended for most professional use cases.*
+* **Generative:** These models can produce the highest quality and most creative outputs, at the cost of speed and fidelity to the original image. *Recommended for most creative use cases.*
+
+The Topaz Labs Image API is a service which allows you to transform images with our industry-leading AI models for upscaling, denoising, sharpening, face recovery, and more.
+
+<figure><img src="https://files.readme.io/7ca6eb0e0384af02037d2d325af46529bc90f86a9a3e926da4520f96b7be22d8-topaz-enhancedexample.png" alt=""><figcaption></figcaption></figure>
+
+### Resources
+
+To learn more about the details behind our AI models and capabilities, reference our desktop software application documentation below:
+
+* [AI Models](https://docs.topazlabs.com/gigapixel-ai/filters-panel/ai-models)
+* [Face Recovery](https://docs.topazlabs.com/gigapixel-ai/filters-panel/face-selection-and-recovery)
+
+### Authentication
+
+You will need a Topaz API key in order to make requests to this API. Make sure you never share your API key with anyone, and you never commit it to a public repository.
+
+Once you have your API key, set it as the `X-API-Key` header of your requests.
+
+Please contact [support](https://mailto:enterprise@topazlabs.com) if any assistance is needed.
+
+Please visit <https://www.topazlabs.com/api> to get started with an API key if you have not already.
+
+### API Restrictions
+
+* The API has access rate limits depending on the current load on the servers. If you receive a HTTP 429 response, please try again (soon). We recommend using an exponential backoff for the requests to avoid immediately hitting the limit again.
+* The API only responds to HTTPS-secured communications. Any requests sent via HTTP return an HTTP 301 redirect to the corresponding HTTPS resources.
+* The API enforces a request size limit of 500MB. If a request exceeds this limit, the server responds with an HTTP 413. Please ensure that requests stay within the size constraint to avoid this error.
+
+### Contact
+
+Please reach out to <enterprise@topazlabs.com> with any questions.
+
+
+# Available Models
+
+Topaz Labs offers two different general classes of AI models:
+
+* **Standard:** These models are incredibly fast and efficient, and preserve the original fidelity and details of source images with maximum accuracy. *Recommended for most professional use cases.*
+* **Generative:** These models can produce the highest quality and most creative outputs, at the cost of speed and fidelity to the original image. *Recommended for most creative use cases.*
+
+> Generative models are only available as asynchronous endpoints since these powerful models can take up to several minutes to complete; blocking a HTTP request for extended periods of time is not recommended.
+
+### Enhance
+
+These are our industry-standard upscaling and image enhancement models, which run blazingly fast and work great for most scenarios.
+
+Each of the models listed below are of the **Standard** class. None of these models are generative or diffusion-based.
+
+| Model               | Description                                                                                             | Parameters                                                                                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Standard V2`       | General-purpose model balancing detail, sharpness, and noise reduction for various images.              | <p></p><ul><li><code>sharpen</code></li><li><code>denoise</code></li><li><code>fix\_compression</code></li></ul>                                 |
+| `Low Resolution V2` | Enhances clarity and detail in low-resolution images like web graphics and screenshots.                 | <p></p><ul><li><code>sharpen</code></li><li><code>denoise</code></li><li><code>fix\_compression</code></li></ul>                                 |
+| `CGI`               | Optimized for CGI and digital illustrations, enhancing texture and detail in computer-generated images. | <ul><li><code>sharpen</code></li><li><code>denoise</code></li></ul>                                                                              |
+| `High Fidelity V2`  | Ideal for high-quality images, preserving intricate details in professional photography.                | <ul><li><code>sharpen</code></li><li><code>denoise</code></li><li><code>fix\_compression</code></li></ul>                                        |
+| `Text Refine`       | Designed for images with text and shapes, enhancing clarity and sharpness of elements.                  | <ul><li><code>strength</code></li></ul><ul><li><code>sharpen</code></li><li><code>denoise</code></li><li><code>fix\_compression</code></li></ul> |
+
+* `sharpen`: Slightly sharpens the image. (decimal from 0 to 1)
+* `denoise`: Reduces noise in the image. (decimal from 0 to 1)
+* `fix_compression`: Reduces compression artifacts to improve details. (decimal from 0 to 1)
+* `strength`: Controls model strength. Too high of a result can make results look unrealistic (decimal from 0.01 to 1)
+
+These parameters should be appended as key-value fields in the form-data request bodies (i.e. alongside the `model`, `output_height`, and `face_enhancement` etc. fields). Any parameters not explicitly provided are <mark style="color:blue;">**automatically**</mark> configured by our auto-parameter model. Extra parameters provided that are not supported are ignored.
+
+### Enhance Generative
+
+Our latest cutting-edge and most powerful generative AI models which can repair, reconstruct, and enhance your images. These models only run asynchronously.
+
+Noting that these **Generative** models may produce creative outputs under certain scenarios. If you're looking for more consistent generations, you may consider our class of **Standard** models.
+
+| Model         | Description                                                                                                                                              | Parameters                                                                                                                                                                                          |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Redefine`    | Elevate creativity with realistic upscaling, prioritizing either fidelity or creative detail. Ideal for low-resolution, blurry, and AI-generated images. | <p></p><ul><li><code>prompt</code></li><li><code>autoprompt</code></li><li><code>creativity</code></li><li><code>texture</code></li><li><code>sharpen</code></li><li><code>denoise</code></li></ul> |
+| `Recovery`    | Delivers high fidelity upscaling for extremely low-resolution images, preserving natural detail and sharpness.                                           | <ul><li><code>detail</code></li></ul>                                                                                                                                                               |
+| `Recovery V2` | Newest model that delivers high fidelity upscaling for extremely low-resolution images, preserving natural detail and sharpness.                         | <ul><li><code>detail</code></li></ul>                                                                                                                                                               |
+
+* `prompt`: A description of the resulting image you are looking for. **The model responds more to a descriptive statement versus a directive one**. For example, use the phrase "girl with red hair and blue eyes" instead of "change the girl's hair to red and make her eyes blue" (text - max 1024 characters).
+* `autoprompt`: Whether you want to use our state-of-the-art autoprompting model to auto-generate a prompt for you. If enabled, ignores value given to `prompt`. (boolean).
+* `creativity`: Lower creativity values maintain the highest fidelity to the original image. Higher values take more liberties and provide more creative results for specific details. (integer from 1 to 6).
+* `texture`: Add texture to the image. Recommend setting texture to 1 for at a low creativity level, and 3 for more creative results at a higher creativity level. (integer from 1 to 5).
+* `sharpen`: Slightly sharpens the image. (decimal from 0 to 1).
+* `denoise`: Reduces noise in the image. (decimal from 0 to 1).
+* `detail`: Adjusts the level of added detail after rendering. (decimal from 0 to 1).
+
+These parameters should be appended as key-value fields in the form-data request bodies (i.e. alongside the `model`, `output_height`, and `face_enhancement` etc. fields). Any parameters not explicitly provided are <mark style="color:blue;">**automatically**</mark> configured by our auto-parameter model. Extra parameters provided that are not supported are ignored.
+
+### Sharpen
+
+You can use the Sharpen models to create crisp, sharp image outputs, removing blur and bringing the subject or entire image into focus.
+
+All of the Sharpen models listed below are **Standard** type models, and are not generative.
+
+| Model        | Description                                                                                                                                         | Parameters                                                                                  |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Standard     | All-purpose sharpening, intended for images with slight amounts of lens and motion blur.                                                            | <ul><li><code>strength</code></li></ul><ul><li><code>minor\_denoise</code></li></ul>        |
+| Strong       | For very blurry and out-of-focus images. Try the Standard model before the Strong model to avoid over sharpening and generating unwanted artifacts. | <ul><li><code>strength</code></li></ul>                                                     |
+| Lens Blur    | Ideal for images affected by imperfections caused when the camera lens fails to focus correctly.                                                    | <ul><li><code>strength</code></li></ul><ul><li><code>minor\_denoise</code></li></ul>        |
+| Lens Blur V2 | Generation 2 of the Lens Blur model, producing more consistent and stronger sharpening results in most scenarios.                                   | <ul><li><code>strength</code></li></ul><ul><li><code>minor\_denoise</code></li></ul>        |
+| Motion Blur  | Optimized to correct the streaked or smeared effect caused by the movement of either the camera or the subject during the exposure time.            | <ul><li><code>strength</code></li></ul><ul><li><code>minor\_denoise</code></li></ul>        |
+| Natural      | Designed to sharpen objects and keep textures looking natural.                                                                                      | <p></p><ul><li><code>strength</code></li></ul><ul><li><code>minor\_denoise</code></li></ul> |
+| Refocus      | Emphasize details and bring out finer lines or texture.                                                                                             | <p></p><ul><li><code>strength</code></li></ul><ul><li><code>minor\_denoise</code></li></ul> |
+
+* `strength`: Increases details. Too much sharpening can create an unrealistic result. (decimal from 0.01 to 1).
+* `minor_denoise`: Removes noisy pixels to increase clarity. Can slightly increase image sharpness. (decimal from 0.01 to 1).
+
+Any parameters not explicitly provided are <mark style="color:blue;">**automatically**</mark> configured by our auto-parameter model. Extra parameters provided that are not supported are ignored.
+
+#### Example
+
+<figure><img src="https://1463475293-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FFYSa4NUsr6FAMtA4geOP%2Fuploads%2FGDYpz2Poytb4B9iz8yRR%2F20403b0f5f69ec2a62e0e073137239f4a15c259d3d6b2bcb1c73e5e36a20f309-sharpen-example-docs.avif?alt=media&#x26;token=71a70743-cae6-4a4b-993a-670773bd49f4" alt=""><figcaption></figcaption></figure>
+
+### Sharpen Generative
+
+A more powerful version of Sharpening using generative AI to add back missing information when refocusing and sharpening an image.
+
+Note that under some scenarios, these models may be **Generative** as compared to our Standard sharpening models.
+
+| Model          | Description                                                                                                                                            | Parameters                                                                                                   |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| Super Focus    | Fix blur and extract detail on the most stubborn and difficult images that cannot be enhanced through other sharpening models.                         | <ul><li><code>strength</code></li></ul><ul><li><code>focus\_boost</code></li><li><code>seed</code></li></ul> |
+| Super Focus V2 | Our newest model that fixes blur and extract detail on the most stubborn and difficult images that cannot be enhanced through other sharpening models. | <ul><li><code>detail</code></li><li><code>focus\_boost</code></li></ul>                                      |
+
+* `strength`: Increases details. Too much sharpening can create an unrealistic result. (decimal from 0 to 1).
+* `detail`: Increases details. Too much sharpening can create an unrealistic result. (decimal from 0 to 1). 'Strength' was renamed to 'Detail' in Super Focus V2
+* `focus_boost`: Use on very blurry images! Focus boost corrects images that are missing detail by downscaling your image then upscaling the results back to the original size. (decimal from 0.25 to 1).
+* `seed`: Generation seed. (integer from -2147483648 to 2147483647).
+
+These parameters should be appended as key-value fields in the form-data request bodies (i.e. alongside the `model`, `output_height`, and `face_enhancement` etc. fields). Any parameters not explicitly provided are <mark style="color:blue;">**automatically**</mark> configured by our auto-parameter model. Extra parameters provided that are not supported are ignored.
+
+### Denoise
+
+Remove sensor noise and grain from images, creating crisp and smooth details. Does wonders especially for low-light or RAW images. Under some scenarios, these models can even be used to remove dust and splotches on an image.
+
+All of these models are **Standard** class models, and are not Generative.
+
+| Model   | Description                                                                                                                                                                                       | Parameters                                                                                                                |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Normal  | Ideal to remove low-medium noise caused by low-light conditions or compression artifacts, usually for images from smartphones and cameras with their own denoise models to avoid over-processing. | <p></p><ul><li><code>strength</code></li><li><code>minor\_deblur</code></li><li><code>original\_detail</code></li></ul>   |
+| Strong  | Designed to strongly emphasize retaining image detail for medium-high noise images. Use it for images from very low-light conditions                                                              | <p></p><ul><li><code>strength</code></li><li><code>minor\_deblur</code></li><li><code>original\_detail</code></li></ul>   |
+| Extreme | Prioritizes removing as much noise as possible rather than preserving detail. Use it for images with severe noise or heavy compression, such as those shared over the internet.                   | <ul><li><code>strength</code></li></ul><ul><li><code>minor\_deblur</code></li><li><code>original\_detail</code></li></ul> |
+
+* `strength`: Reduces noise in the image. Too high can remove detail and slightly blur the image. (decimal from 0.01 to 1).
+* `minor_deblur`: Slightly sharpens the image. Counteracts softness caused by noise reduction. (decimal from 0.01 to 1).
+* `original_detail`: Return texture and fine details lost during noise reduction. Start at low values and slowly increase. (decimal from 0 to 1).
+
+These parameters should be appended as key-value fields in the form-data request bodies (i.e. alongside the `model`, `output_height`, and `face_enhancement` etc. fields). Any parameters not explicitly provided are <mark style="color:blue;">**automatically**</mark> configured by our auto-parameter model. Extra parameters provided that are not supported are ignored.
+
+#### Example:
+
+<figure><img src="https://1463475293-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FFYSa4NUsr6FAMtA4geOP%2Fuploads%2FpbmZgHbpIIPwnYX7RBMW%2F88d81d7893938ea7041d3dd6b271f6e5b53a5144f675e507e107bbf977451b44-denoise-example-docs.avif?alt=media&#x26;token=d44cbc28-11f6-4ffb-9ae7-be14eb81983a" alt=""><figcaption></figcaption></figure>
+
+### Restore Generative
+
+Revive your sentimental, aged photos with our restorative models. Designed to bring your old images back to life, these models retain the original look and feel of the image while breathing in new life.
+
+All of these models are **Generative** class models.
+
+| Model          | Description                                                                                                                                                                                                                                | Parameters                          |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- |
+| `Dust-Scratch` | Heal major dust, scratches, and surface damage, while preserving the look of your original photos. Archival photos and less-than-pristine lenses are perfect use cases for this brand-new image enhancement—the first AI model of its kind | <ul><li><code>None</code></li></ul> |
+
+These parameters are <mark style="color:blue;">**automatically**</mark> configured and do not require or accept any selection from the user.
+
+#### Example:
+
+<figure><img src="https://1463475293-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FFYSa4NUsr6FAMtA4geOP%2Fuploads%2FwCBbxn6aYOoT4nNWEkkA%2F9506c5d98abbed514ae8eb5217f2aed382c6f4d3a29eb74ff240fa1dcfdadc53-topaz-dust-scratch.avif?alt=media&#x26;token=104028b7-31d3-4f3c-bc39-ad046a9416ca" alt=""><figcaption></figcaption></figure>
+
+### Lighting
+
+Bring vibrance to your images shot in less-than-ideal lighting conditions. Our lighting models change the image on a pixel-by-pixel basis according to their unique characteristics and surrounding context instead of adjusting them universally.
+
+All of these models are **Standard** class models, and are not Generative.
+
+| Model           | Description                                                                                                              | Parameters                                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Adjust`        | This filter modifies exposure and contrast to produce a well-lit and vibrant image                                       | <p></p><ul><li><code>color\_correction</code></li><li><code>exposure</code></li><li><code>highlight</code></li><li><code>shadow</code></li></ul> |
+| `White Balance` | This filter neutralizes unwanted color casts and allows creative tone adjustments through cooler and warmer enhancements | <p></p><ul><li><code>temperature</code></li><li><code>opacity</code></li></ul>                                                                   |
+
+* `color_correction`: adjust the vibrance (boolean of true or false).
+* `exposure`: adjust the exposure (decimal from 0 to 2).
+* `highlight`: adjust prominence of highlights (decimal from 0 to 2).
+* `shadow`: adjust prominence of shadows (decimal from 0 to 2).
+* `temperature`: adjust overall warmth (decimal from 0.01 to 1).
+* `opacity`: adjust strength of opacity (decimal from 0.01 to 1).
+
+Any parameters that are not explicitly provided are configured to our default values. Extra parameters provided that are not supported are ignored.
+
+#### Example:
+
+<figure><img src="https://1463475293-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FFYSa4NUsr6FAMtA4geOP%2Fuploads%2FVT0Y5OUWpseT1eP8Vp2y%2F2b757c3dcbd98952521cfb24b9f2d1028974502443d2930b2346767331e7bc16-topaz-adjust-lighting.jpg?alt=media&#x26;token=3b5a7245-7fb5-4b3a-8fed-4d219c6197c4" alt=""><figcaption></figcaption></figure>
+
+
+# Popular Use Cases
+
+### Revive an Old Photo
+
+Breathe new life into cherished memories with our comprehensive photo restoration process. This two-step workflow removes noise and enhances overall quality—making it perfect for digitized family photos, historical images, or any treasured photograph that has deteriorated over time. The process even includes intelligent face enhancement to ensure your subjects look their best while maintaining their authentic character.
+
+{% stepper %}
+{% step %}
+
+### Denoise
+
+```
+curl --request POST \
+     --url https://api.topazlabs.com/image/v1/denoise \
+     --header 'X-API-Key: YOUR_API_KEY' \
+     --header 'accept: image/jpeg' \
+     --header 'content-type: multipart/form-data' \
+     --form 'model=Extreme' \
+     --form 'output_format=jpeg' \
+     --form image='@[path to your image].jpg     
+     --output 'denoised_photo.jpg'
+```
+
+{% endstep %}
+
+{% step %}
+
+### Sharpen
+
+```
+curl --request POST \
+     --url https://api.topazlabs.com/image/v1/enhance \
+     --header 'X-API-Key: YOUR_API_KEY' \
+     --header 'accept: image/jpeg' \
+     --header 'content-type: multipart/form-data' \
+     --form 'model=Standard V2' \
+     --form 'face_enhancement=true' \
+     --form 'face_enhancement_strength=0.8' \
+     --form 'output_format=jpeg' \
+     --form image='@denoised_photo.jpg' \
+     --output 'restored_old_photo.jpg'
+```
+
+{% endstep %}
+{% endstepper %}
+
+<figure><img src="https://1463475293-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FFYSa4NUsr6FAMtA4geOP%2Fuploads%2FS5dQyHh1sXbOx8ags5Wq%2Fimage.png?alt=media&#x26;token=fd4ef90a-17b9-4831-b653-deca5b83055d" alt=""><figcaption></figcaption></figure>
+
+### Enhance a Blurry Photo
+
+Transform disappointing, out-of-focus images into crisp, detailed photographs with our powerful enhancement API. This single-step solution not only corrects blur but also intelligently upscales your image to 4K resolution while preserving natural proportions. With advanced subject detection and face enhancement technology, your subjects will appear sharper and more defined without looking artificially processed—perfect for salvaging important shots that didn't quite come out right the first time.
+
+```
+curl --request POST \
+     --url https://api.topazlabs.com/image/v1/enhance \
+     --header 'X-API-Key: YOUR_API_KEY' \
+     --header 'accept: image/jpeg' \
+     --header 'content-type: multipart/form-data' \
+     --form 'model=Standard V2' \
+     --form output_width=3840 \
+     --form crop_to_fill=false \
+     --form image='@[path to your image]' \
+     --form output_format=jpeg \
+     --form subject_detection=Foreground \
+     --form face_enhancement=true \
+     --form face_enhancement_creativity=0 \
+     --form face_enhancement_strength=0.8 \
+     --output enhanced_image.jpeg	
+```
+
+<figure><img src="https://1463475293-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FFYSa4NUsr6FAMtA4geOP%2Fuploads%2FuxwWT0QL7c53VY1Bq93f%2Fimage.png?alt=media&#x26;token=0aab9c13-71fb-4112-829b-d1fa2408fc52" alt=""><figcaption></figcaption></figure>
+
+### Enhance Product Photography
+
+Elevate your e-commerce visuals with our professional-grade product photography enhancement. This two-step process first leverages our sharpening algorithm to add the perfect amount of crispness that highlight product features without introducing artifacts. Then, we upscale your product images to stunning 4K resolution while applying our enhance model that brings out texture and detail without distortion—ensuring your merchandise looks its absolute best online and drives higher conversion rates.
+
+{% stepper %}
+{% step %}
+
+### Sharpen
+
+```
+curl --request POST \
+     --url https://api.topazlabs.com/image/v1/sharpen \
+     --header 'X-API-Key: YOUR_API_KEY' \
+     --header 'accept: image/jpeg' \
+     --header 'content-type: multipart/form-data' \
+     --form 'output_format=jpeg' \
+     --form image='@[path to your image]' \
+     --output 'sharpen_product.jpg'
+```
+
+{% endstep %}
+
+{% step %}
+
+### Enhance
+
+```
+curl --request POST \
+     --url https://api.topazlabs.com/image/v1/enhance \
+     --header 'X-API-Key: YOUR_API_KEY' \
+     --header 'accept: image/jpeg' \
+     --header 'content-type: multipart/form-data' \
+     --form 'output_width=3840' \
+     --form 'crop_to_fill=false' \
+     --form 'output_format=jpeg' \
+     --form image='@sharpen_product.jpg' \
+     --output 'enhanced_product.jpg'
+```
+
+{% endstep %}
+{% endstepper %}
+
+<figure><img src="https://1463475293-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FFYSa4NUsr6FAMtA4geOP%2Fuploads%2FS346iUU5TXB8w6HElgbE%2Fimage.png?alt=media&#x26;token=4c10df81-8481-47bb-a522-60d3533e95fe" alt=""><figcaption></figcaption></figure>
+
+{% hint style="info" %}
+Want to try out the API? Simply create your first API key and you'll receive 100 free credits
+{% endhint %}
