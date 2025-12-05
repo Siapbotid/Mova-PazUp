@@ -2,6 +2,8 @@ const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs-extra');
 const path = require('path');
+const os = require('os');
+const { spawn } = require('child_process');
 
 class TopazAPI {
     constructor(apiKey) {
@@ -18,9 +20,6 @@ class TopazAPI {
 
     // Create image enhancement request
     async createImageRequest(options) {
-        const FormData = require('form-data');
-        const formData = new FormData();
-        
         // Validate input file exists
         if (!fs.existsSync(options.inputPath)) {
             throw new Error(`Input file does not exist: ${options.inputPath}`);
@@ -34,8 +33,6 @@ class TopazAPI {
             exists: fs.existsSync(options.inputPath)
         });
 
-        // Test with explicit metadata like n8n does
-        const fileStream = fs.createReadStream(options.inputPath);
         const filename = path.basename(options.inputPath);
         const contentType = this.getImageContentType(options.inputPath);
         
@@ -45,78 +42,89 @@ class TopazAPI {
             size: fileStats.size
         });
 
-        // Add parameters in the exact order and format as n8n workflow
-        formData.append('output_width', options.outputWidth || '3840');
-        formData.append('crop_to_fill', 'false'); // String, not boolean
-        formData.append('output_format', options.outputFormat || 'jpeg');
-        formData.append('image', fileStream, {
-            filename: filename,
-            contentType: contentType,
-            knownLength: fileStats.size
-        });
-        formData.append('model', options.model || 'Standard V2');
+        // Add parameters in the exact order and format as n8n workflow / working curl
+        const outputWidth = options.outputWidth || '3840';
+        // Decide output format based on requested format; default to jpeg
+        const requestedFormat = (options.outputFormat || 'jpeg').toLowerCase();
+        const outputFormat = requestedFormat === 'png' ? 'png' : 'jpeg';
+        const acceptHeader = outputFormat === 'png' ? 'image/png' : 'image/jpeg';
 
-        console.log('Testing with n8n-matched parameters and metadata:', {
+        console.log('Using curl with parameters:', {
             inputPath: options.inputPath,
-            output_width: options.outputWidth || '3840',
+            output_width: outputWidth,
             crop_to_fill: 'false',
-            output_format: options.outputFormat || 'jpeg',
+            output_format: outputFormat,
             model: options.model || 'Standard V2',
             filename: filename,
             contentType: contentType,
             fileSize: fileStats.size
         });
 
-        console.log('FormData parameters with n8n order and metadata:');
-        console.log(`- output_width: ${options.outputWidth || '3840'}`);
-        console.log('- crop_to_fill: false');
-        console.log(`- output_format: ${options.outputFormat || 'jpeg'}`);
-        console.log(`- image: [ReadStream with filename: ${filename}, contentType: ${contentType}, size: ${fileStats.size}]`);
-        console.log(`- model: ${options.model || 'Standard V2'}`);
-
         try {
-            // Log the complete request details for debugging
-            console.log('Making request to:', `${this.baseURL}/image/v1/enhance`);
-            console.log('Request headers will include:', {
-                'X-API-Key': this.apiKey ? `${this.apiKey.substring(0, 8)}...` : 'MISSING',
-                'accept': (options.outputFormat || 'jpeg') === 'png' ? 'image/png' : 'image/jpeg'
-            });
-            
-            const response = await axios.post(`${this.baseURL}/image/v1/enhance`, formData, {
-                headers: {
-                    'X-API-Key': this.apiKey,
-                    'accept': (options.outputFormat || 'jpeg') === 'png' ? 'image/png' : 'image/jpeg',
-                    ...formData.getHeaders()
-                },
-                responseType: 'arraybuffer',
-                timeout: 60000, // 60 second timeout
-                maxContentLength: Infinity,
-                maxBodyLength: Infinity
+            // Use system curl to exactly match the working manual curl request
+            const tempOutputPath = path.join(
+                os.tmpdir(),
+                `topaz_image_${Date.now()}_${Math.random().toString(36).slice(2)}.jpeg`
+            );
+
+            const curlCmd = process.platform === 'win32' ? 'curl.exe' : 'curl';
+            const curlArgs = [
+                '-X', 'POST',
+                'https://api.topazlabs.com/image/v1/enhance',
+                '-H', `X-API-Key: ${this.apiKey}`,
+                '-H', `accept: ${acceptHeader}`,
+                '-F', `model=${options.model || 'Standard V2'}`,
+                '-F', `output_width=${outputWidth}`,
+                '-F', 'crop_to_fill=false',
+                '-F', `output_format=${outputFormat}`,
+                '-F', `image=@${options.inputPath}`,
+                '--output', tempOutputPath,
+                '--fail-with-body'
+            ];
+
+            console.log('Running curl for image enhance:', { cmd: curlCmd, args: curlArgs });
+
+            const result = await new Promise((resolve) => {
+                const child = spawn(curlCmd, curlArgs);
+                let stderr = '';
+
+                child.stderr.on('data', (data) => {
+                    stderr += data.toString();
+                });
+
+                child.on('error', (err) => {
+                    resolve({ success: false, error: `Failed to start curl: ${err.message}` });
+                });
+
+                child.on('close', async (code) => {
+                    if (code === 0) {
+                        try {
+                            const imageData = await fs.readFile(tempOutputPath);
+                            try {
+                                await fs.unlink(tempOutputPath);
+                            } catch (e) {
+                                // Ignore temp file cleanup errors
+                            }
+                            resolve({ success: true, imageData, headers: {} });
+                        } catch (readErr) {
+                            resolve({
+                                success: false,
+                                error: `Curl succeeded but failed to read output file: ${readErr.message}`
+                            });
+                        }
+                    } else {
+                        const message = stderr || `curl exited with code ${code}`;
+                        resolve({ success: false, error: message });
+                    }
+                });
             });
 
-            return {
-                success: true,
-                imageData: response.data,
-                headers: response.headers
-            };
+            return result;
         } catch (error) {
-            console.error('Error creating image request:', error.response?.data || error.message);
-            
-            // Handle ArrayBuffer error response
-            let errorMessage = error.message;
-            if (error.response?.data instanceof ArrayBuffer) {
-                try {
-                    errorMessage = new TextDecoder().decode(error.response.data);
-                } catch (decodeError) {
-                    errorMessage = `HTTP ${error.response.status}: ${error.response.statusText}`;
-                }
-            } else if (error.response?.data) {
-                errorMessage = error.response.data;
-            }
-            
+            console.error('Error creating image request via curl:', error.message);
             return {
                 success: false,
-                error: errorMessage
+                error: error.message
             };
         }
     }

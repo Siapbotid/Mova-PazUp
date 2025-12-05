@@ -375,6 +375,59 @@ input[readonly] {
     font-size: 12px;
 }
 
+.activity-log-card {
+    margin-top: 20px;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    border: 1px solid rgba(106, 76, 147, 0.5);
+}
+
+.activity-log-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.activity-log-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #c77dff;
+}
+
+.activity-log-copy-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+}
+
+.activity-log-content {
+    max-height: 140px;
+    min-height: 80px;
+    overflow-y: auto;
+    background: rgba(5, 5, 20, 0.9);
+    border-radius: 6px;
+    border: 1px solid rgba(106, 76, 147, 0.4);
+    padding: 8px 10px;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.activity-log-entry {
+    margin-bottom: 4px;
+    color: #e0e0e0;
+    word-break: break-all;
+}
+
+.activity-log-entry:last-child {
+    margin-bottom: 0;
+}
+
+.activity-log-empty {
+    color: #9090a0;
+    font-style: italic;
+}
+
 /* Action Buttons */
 .action-buttons {
     display: flex;
@@ -524,6 +577,13 @@ input[readonly] {
     margin: 0;
     font-size: 16px;
     border-bottom: 1px solid rgba(106, 76, 147, 0.3);
+}
+
+.processing-count-label {
+    font-size: 13px;
+    color: #c77dff;
+    margin-left: 6px;
+    opacity: 0.8;
 }
 
 .processing-list {

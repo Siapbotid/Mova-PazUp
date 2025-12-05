@@ -24,6 +24,9 @@ let pausedProcesses = new Set(); // Track paused process IDs
 // Media type state
 let currentMediaType = 'video'; // 'video' or 'image'
 
+let activityLogEntries = [];
+const MAX_ACTIVITY_LOG_ENTRIES = 200;
+
 // DOM elements
 const elements = {
     licenseEmail: document.getElementById('licenseEmail'),
@@ -35,6 +38,7 @@ const elements = {
     apiKey: document.getElementById('apiKey'),
     addApiKey: document.getElementById('addApiKey'),
     apiKeysList: document.getElementById('apiKeysList'),
+    totalCredits: document.getElementById('totalCredits'),
     inputFolder: document.getElementById('inputFolder'),
     outputFolder: document.getElementById('outputFolder'),
     selectInputFolder: document.getElementById('selectInputFolder'),
@@ -64,6 +68,8 @@ const elements = {
     pauseUpscale: document.getElementById('pauseUpscale'),
     resumeUpscale: document.getElementById('resumeUpscale'),
     stopUpscale: document.getElementById('stopUpscale'),
+    activityLogContent: document.getElementById('activityLogContent'),
+    copyActivityLog: document.getElementById('copyActivityLog'),
     licenseInfoBtn: document.getElementById('licenseInfoBtn'),
     logoutBtn: document.getElementById('logoutBtn'),
     licenseModal: document.getElementById('licenseModal'),
@@ -71,6 +77,7 @@ const elements = {
     licenseModalClose: document.getElementById('licenseModalClose'),
     videoFilesList: document.getElementById('videoFilesList'),
     processingList: document.getElementById('processingList'),
+    processingCount: document.getElementById('processingCount'),
     fileCount: document.getElementById('fileCount'),
     statusText: document.getElementById('statusText'),
     activeProcesses: document.getElementById('activeProcesses')
@@ -342,7 +349,8 @@ function loadConfigToUI() {
     elements.frameInterpolation.value = appConfig.frameInterpolation || 'chf-3';
     elements.resolution.value = appConfig.resolution || '1920x1080';
     elements.removeAudio.value = appConfig.removeAudio === true ? 'yes' : 'no';
-    maxWorkers = appConfig.workers || 2; // Changed from 1 to 2
+    const configuredWorkers = appConfig.workers || 2; // Changed from 1 to 2
+    maxWorkers = Math.min(configuredWorkers, 20);
     if (elements.workers) {
         elements.workers.value = maxWorkers;
     }
@@ -404,6 +412,10 @@ function setupEventListeners() {
     elements.pauseUpscale.addEventListener('click', pauseUpscaleProcess);
     elements.resumeUpscale.addEventListener('click', resumeUpscaleProcess);
     elements.stopUpscale.addEventListener('click', stopUpscaleProcess);
+
+    if (elements.copyActivityLog) {
+        elements.copyActivityLog.addEventListener('click', handleCopyActivityLog);
+    }
 
     if (elements.licenseInfoBtn) {
         elements.licenseInfoBtn.addEventListener('click', handleLicenseInfoClick);
@@ -493,7 +505,7 @@ async function selectFolder(type) {
 // Handle workers change
 function handleWorkersChange() {
     const workers = parseInt(elements.workers.value);
-    if (workers >= 1 && workers <= 50) {
+    if (workers >= 1 && workers <= 20) {
         maxWorkers = workers;
         appConfig.workers = workers;
         saveConfig();
@@ -610,6 +622,95 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+function escapeHtml(text) {
+    if (text === undefined || text === null) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+function addActivityLog(message, data) {
+    if (!Array.isArray(activityLogEntries)) {
+        activityLogEntries = [];
+    }
+    const timestamp = new Date().toLocaleTimeString();
+    let line = `[${timestamp}] ${message || ''}`;
+    if (data) {
+        try {
+            const serialized = typeof data === 'string' ? data : JSON.stringify(data);
+            if (serialized && serialized !== '{}') {
+                line += ` | ${serialized}`;
+            }
+        } catch (e) {
+            line += ` | ${String(data)}`;
+        }
+    }
+    activityLogEntries.push(line);
+    if (activityLogEntries.length > MAX_ACTIVITY_LOG_ENTRIES) {
+        activityLogEntries.splice(0, activityLogEntries.length - MAX_ACTIVITY_LOG_ENTRIES);
+    }
+    renderActivityLog();
+}
+
+function renderActivityLog() {
+    const container = elements.activityLogContent;
+    if (!container) return;
+
+    if (!activityLogEntries || activityLogEntries.length === 0) {
+        container.innerHTML = '<div class="activity-log-empty">No activity yet</div>';
+        return;
+    }
+
+    const html = activityLogEntries
+        .map(entry => '<div class="activity-log-entry">' + escapeHtml(entry) + '</div>')
+        .join('');
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+}
+
+async function copyTextToClipboard(text) {
+    if (!text) return;
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+        } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+    } catch (error) {
+        console.error('Failed to copy text to clipboard:', error);
+        throw error;
+    }
+}
+
+async function handleCopyActivityLog() {
+    if (!activityLogEntries || activityLogEntries.length === 0) {
+        return;
+    }
+    const text = activityLogEntries.join('\n');
+    try {
+        await copyTextToClipboard(text);
+        if (elements.copyActivityLog) {
+            const originalText = elements.copyActivityLog.textContent;
+            elements.copyActivityLog.textContent = 'Copied';
+            elements.copyActivityLog.disabled = true;
+            setTimeout(() => {
+                elements.copyActivityLog.textContent = originalText;
+                elements.copyActivityLog.disabled = false;
+            }, 1500);
+        }
+    } catch (error) {
+        updateStatus('Failed to copy activity log');
+    }
+}
+
 // Start upscale process
 async function startUpscaleProcess() {
     if (!validateConfiguration()) {
@@ -619,12 +720,19 @@ async function startUpscaleProcess() {
     const pendingFiles = mediaFiles.filter(file => file.status === 'pending');
     if (pendingFiles.length === 0) {
         alert('No pending files to process');
+        addActivityLog('Start upscale requested but no pending files', { mediaType: currentMediaType });
         return;
     }
     
     processingState = 'running';
     updateControlButtons();
     updateStatus(`Starting ${currentMediaType} upscale process...`);
+
+    addActivityLog('Starting upscale process', {
+        mediaType: currentMediaType,
+        pendingFiles: pendingFiles.length,
+        workers: maxWorkers
+    });
     
     // Refresh credit balances before starting
     await apiManager.refreshAllCreditBalances();
@@ -745,16 +853,19 @@ function validateConfiguration() {
     const apiKeys = apiManager.getApiKeys();
     if (apiKeys.length === 0) {
         updateStatus('Please add at least one API key');
+        addActivityLog('Configuration error: no API keys configured');
         return false;
     }
     
     if (!appConfig.inputFolder) {
         updateStatus('Please select an input folder');
+        addActivityLog('Configuration error: input folder not selected');
         return false;
     }
     
     if (!appConfig.outputFolder) {
         updateStatus('Please select an output folder');
+        addActivityLog('Configuration error: output folder not selected');
         return false;
     }
     
@@ -857,12 +968,25 @@ async function processQueue() {
 }
 
 async function processVideoFile(item) {
-    // Route to appropriate processing function based on media type
-    if (item.type === 'image' || item.mediaType === 'image') {
+    // Route to appropriate processing function based on actual file type
+    const file = item.file || {};
+    const fileType = file.type;
+    const extension = (file.extension || '').toLowerCase();
+
+    const isImage = (
+        item.mediaType === 'image' ||
+        item.type === 'image' ||
+        fileType === 'image' ||
+        extension === '.png' ||
+        extension === '.jpg' ||
+        extension === '.jpeg'
+    );
+
+    if (isImage) {
         return await processImageFile(item);
-    } else {
-        return await processVideoFileOriginal(item);
     }
+
+    return await processVideoFileOriginal(item);
 }
 
 async function processImageFile(item) {
@@ -910,6 +1034,23 @@ async function processImageFile(item) {
                 item.retryCount = retryCount;
                 
                 if (retryCount >= maxRetries) {
+                    // Final failure after all retries - mark as error in UI
+                    item.status = 'error';
+                    item.phase = 'Error';
+                    if (item.file) {
+                        item.file.status = 'error';
+                    }
+
+                    // Update individual file status in DOM without full refresh
+                    const fileIndex = mediaFiles.indexOf(item.file);
+                    if (fileIndex !== -1) {
+                        const fileElement = document.querySelector(`[data-file-index="${fileIndex}"] .file-status`);
+                        if (fileElement) {
+                            fileElement.textContent = 'error';
+                            fileElement.className = 'file-status status-error';
+                        }
+                    }
+
                     return result;
                 }
                 
@@ -929,6 +1070,23 @@ async function processImageFile(item) {
             item.retryCount = retryCount;
             
             if (retryCount >= maxRetries) {
+                // Final failure from unexpected error - mark as error in UI
+                item.status = 'error';
+                item.phase = 'Error';
+                item.error = error.message;
+                if (item.file) {
+                    item.file.status = 'error';
+                }
+
+                const fileIndex = mediaFiles.indexOf(item.file);
+                if (fileIndex !== -1) {
+                    const fileElement = document.querySelector(`[data-file-index="${fileIndex}"] .file-status`);
+                    if (fileElement) {
+                        fileElement.textContent = 'error';
+                        fileElement.className = 'file-status status-error';
+                    }
+                }
+
                 return { success: false, error: error.message };
             }
             
@@ -1128,20 +1286,34 @@ async function processImageFileAttempt(item) {
         item.phase = 'Enhancing image';
         item.progress = 30;
         renderProcessingQueue();
+
+        // Determine desired output format based on input file extension
+        const inputPath = item.file.path;
+        const inputExt = path.extname(inputPath).toLowerCase();
+        const effectiveOutputFormat = inputExt === '.png' ? 'png' : 'jpeg';
+        const effectiveOutputWidth = appConfig.outputWidth || '3840';
         
         console.log('Processing image with config:', {
-            inputPath: item.file.path,
+            inputPath,
             model: appConfig.imageModel || 'Standard V2',
-            outputFormat: appConfig.outputFormat || 'jpeg',
-            outputWidth: appConfig.outputWidth || '3840',
+            outputFormat: effectiveOutputFormat,
+            outputWidth: effectiveOutputWidth,
+            apiKey: apiInstance.key.substring(0, 8) + '...'
+        });
+
+        addActivityLog('Image upscale started', {
+            file: item.file && item.file.name,
+            model: appConfig.imageModel || 'Standard V2',
+            outputFormat: effectiveOutputFormat,
+            outputWidth: effectiveOutputWidth,
             apiKey: apiInstance.key.substring(0, 8) + '...'
         });
         
         const enhanceResult = await topazAPI.createImageRequest({
-            inputPath: item.file.path,
+            inputPath,
             model: appConfig.imageModel || 'Standard V2',
-            outputFormat: appConfig.outputFormat || 'jpeg',
-            outputWidth: appConfig.outputWidth || '3840'
+            outputFormat: effectiveOutputFormat,
+            outputWidth: effectiveOutputWidth
         });
         
         console.log('Enhancement result:', enhanceResult);
@@ -1156,10 +1328,8 @@ async function processImageFileAttempt(item) {
         renderProcessingQueue();
         
         // Generate output filename
-        const inputPath = item.file.path;
         const inputName = path.parse(inputPath).name;
-        const outputFormat = appConfig.outputFormat || 'jpeg';
-        const outputExtension = outputFormat === 'jpeg' ? 'jpeg' : 'png';
+        const outputExtension = effectiveOutputFormat === 'jpeg' ? 'jpeg' : 'png';
         const outputFilename = `${inputName}_enhanced.${outputExtension}`;
         const outputPath = path.join(appConfig.outputFolder, outputFilename);
         
@@ -1172,12 +1342,32 @@ async function processImageFileAttempt(item) {
         item.status = 'completed';
         item.outputPath = outputPath;
         
+        // Mark underlying media file as completed so File List reflects the final state
+        if (item.file) {
+            item.file.status = 'completed';
+        }
+        
+        // Update individual file status in DOM without full refresh (File List badge)
+        const fileIndex = mediaFiles.indexOf(item.file);
+        if (fileIndex !== -1) {
+            const fileElement = document.querySelector(`[data-file-index="${fileIndex}"] .file-status`);
+            if (fileElement) {
+                fileElement.textContent = 'completed';
+                fileElement.className = 'file-status status-completed';
+            }
+        }
+        
         // Update credits after processing
         await apiManager.refreshCreditBalance(apiInstance);
         item.creditsAfter = apiInstance.credits ? apiInstance.credits.available : 0;
         item.creditsUsed = Math.max(0, item.creditsBefore - item.creditsAfter);
         
         renderProcessingQueue();
+        addActivityLog('Image upscale completed', {
+            file: item.file && item.file.name,
+            outputPath,
+            creditsUsed: item.creditsUsed
+        });
         
         return { 
             success: true, 
@@ -1187,6 +1377,10 @@ async function processImageFileAttempt(item) {
         
     } catch (error) {
         console.error('Error processing image:', error);
+        addActivityLog('Image upscale error', {
+            file: item && item.file && item.file.name,
+            error: error.message
+        });
         
         item.status = 'error';
         item.phase = 'Error';
@@ -1217,6 +1411,16 @@ async function processVideoFileAttempt(item) {
         // Store credits before processing for tracking
         item.creditsBefore = apiInstance.credits ? apiInstance.credits.available : 0;
 
+        addActivityLog('Video upscale started', {
+            file: item.file && item.file.name,
+            model: appConfig.model,
+            resolution: appConfig.resolution,
+            removeAudio: appConfig.removeAudio,
+            frameInterpolation: appConfig.frameInterpolation,
+            slowMotion: parseInt(appConfig.slowMotion) || 1,
+            apiKey: apiInstance.key.substring(0, 8) + '...'
+        });
+
         // Phase 1: Get video information
         item.phase = 'Analyzing video';
         item.progress = 5;
@@ -1243,6 +1447,11 @@ async function processVideoFileAttempt(item) {
         }
         
         item.requestId = createResult.requestId;
+
+        addActivityLog('Video request created', {
+            file: item.file && item.file.name,
+            requestId: item.requestId
+        });
         
         // Phase 3: Accept request and get upload URL
         item.phase = 'Getting upload URL';
@@ -1262,6 +1471,11 @@ async function processVideoFileAttempt(item) {
         item.phase = 'Uploading video';
         item.progress = 20;
         renderProcessingQueue();
+
+        addActivityLog('Uploading video file', {
+            file: item.file && item.file.name,
+            requestId: item.requestId
+        });
         
         // Extract upload URL from the response
         let uploadUrl = null;
@@ -1392,6 +1606,12 @@ async function processVideoFileAttempt(item) {
         
         const outputFileName = `${path.parse(item.file.name).name}_upscaled${path.extname(item.file.name)}`;
         const outputPath = path.join(appConfig.outputFolder, outputFileName);
+
+        addActivityLog('Downloading upscaled video', {
+            file: item.file && item.file.name,
+            outputPath,
+            requestId: item.requestId
+        });
         
         const downloadResult = await topazAPI.downloadVideo(downloadUrl, outputPath, (progress) => {
             item.progress = 85 + (progress * 0.1); // 85-95%
@@ -1409,9 +1629,9 @@ async function processVideoFileAttempt(item) {
             renderProcessingQueue();
             
             try {
-                const tempPath = outputPath + '.temp';
+                let tempPath = outputPath + '.temp';
                 await fs.move(outputPath, tempPath);
-                
+
                 await VideoUtils.removeAudio(tempPath, outputPath, (progress) => {
                     item.progress = 95 + (progress * 0.05); // 95-100%
                     renderProcessingQueue();
@@ -1420,6 +1640,15 @@ async function processVideoFileAttempt(item) {
                 await fs.remove(tempPath);
             } catch (audioError) {
                 console.warn('Failed to remove audio locally:', audioError.message);
+                try {
+                    const tempExists = await fs.pathExists(outputPath + '.temp');
+                    const finalExists = await fs.pathExists(outputPath);
+                    if (tempExists && !finalExists) {
+                        await fs.move(outputPath + '.temp', outputPath);
+                    }
+                } catch (restoreError) {
+                    console.warn('Failed to restore original audio file after error:', restoreError.message);
+                }
                 // Continue anyway - the file is still processed
             }
         }
@@ -1441,10 +1670,20 @@ async function processVideoFileAttempt(item) {
         }
         
         renderProcessingQueue();
+
+        addActivityLog('Video upscale completed', {
+            file: item.file && item.file.name,
+            outputPath,
+            requestId: item.requestId
+        });
         
         // Don't remove from queue or decrement activeProcesses here - let the finally block handle it
         
     } catch (error) {
+        addActivityLog('Video upscale error', {
+            file: item && item.file && item.file.name,
+            error: error.message
+        });
         throw error; // Re-throw for retry logic
     }
 }
@@ -1455,8 +1694,15 @@ function renderProcessingQueue() {
     const processingItems = processingQueue.filter(item => item.status !== 'queued');
     
     if (processingItems.length === 0) {
+        if (elements.processingCount) {
+            elements.processingCount.textContent = '(0)';
+        }
         elements.processingList.innerHTML = '<div class="empty-state"><p>No processing tasks</p></div>';
         return;
+    }
+    
+    if (elements.processingCount) {
+        elements.processingCount.textContent = `(${processingItems.length})`;
     }
     
     const html = processingItems.map((item, index) => `
@@ -1634,7 +1880,29 @@ async function removeApiKey(index) {
 function renderApiKeys() {
     const apiKeysList = elements.apiKeysList;
     const apiKeys = apiManager.getApiKeys();
-    
+    const totalCreditsElement = elements.totalCredits;
+    let totalCredits = 0;
+    let hasCreditInfo = false;
+
+    if (apiKeys && apiKeys.length > 0) {
+        for (const keyInfo of apiKeys) {
+            if (keyInfo.credits && typeof keyInfo.credits.available === 'number') {
+                totalCredits += keyInfo.credits.available;
+                hasCreditInfo = true;
+            }
+        }
+    }
+
+    if (totalCreditsElement) {
+        if (!apiKeys || apiKeys.length === 0) {
+            totalCreditsElement.textContent = 'Total: 0 credits';
+        } else if (hasCreditInfo) {
+            totalCreditsElement.textContent = `Total: ${totalCredits} credits`;
+        } else {
+            totalCreditsElement.textContent = 'Total: Loading...';
+        }
+    }
+
     if (!apiKeys || apiKeys.length === 0) {
         apiKeysList.innerHTML = '<div class="api-key-item">No API keys configured</div>';
         return;

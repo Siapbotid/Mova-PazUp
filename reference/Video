@@ -1,0 +1,409 @@
+# Status
+
+This section grants you system status
+
+## Get System Status
+
+> Get status of the video rendering system\
+> \
+> \## Response body\
+> \
+> \| \*\*Property\*\*           | \*\*Type\*\*  | \*\*Description\*\*                                   |\
+> \|-----------------------|----------|-----------------------------------------------------|\
+> \| \*\*isAvailable\*\*            | Boolean   | System availability status                    |\
+> \| \*\*availabilityMessage\*\*    | String    | Availability message                          |\
+> \| \*\*queueState\*\*             | Object    | Queue utilization and job age details         |\
+> \| \*\*queueState.utilization\*\* | Number    | Total jobs (active and pending) divided by scaling group max capacity |\
+> \| \*\*queueState.avgJobAge\*\*   | Number    | Average age of job in queue, in minutes       |\
+> \| \*\*queueState.maxJobAge\*\*   | Number    | Age of oldest job in queue, in minutes        |\
+> \| \*\*supportedModels\*\*        | Array     | List of supported AI models' \[short code names]\(<https://docs.topazlabs.com/video-ai/advanced-functions-in-topaz-video-ai/command-line-interface#selecting-models-with-cli-3154>) |<br>
+
+```json
+{"openapi":"3.0.3","info":{"title":"Video API","version":"1.0.0"},"tags":[{"name":"Status","description":"This section grants you system status\n"}],"servers":[{"url":"https://api.topazlabs.com","description":"Production API base URL"}],"security":[{"apiKey":[]}],"components":{"securitySchemes":{"apiKey":{"type":"apiKey","in":"header","name":"X-API-Key"}},"schemas":{"SystemStatusResponse":{"type":"object","properties":{"isAvailable":{"type":"boolean"},"availabilityMessage":{"type":"string"},"queueState":{"type":"object","properties":{"utilization":{"type":"number","minimum":0,"maximum":1,"description":"Total jobs (active and pending) divided by scaling group max capacity"},"avgJobAge":{"type":"number","description":"Average age of job in queue, in minutes"},"maxJobAge":{"type":"number","description":"Age of oldest job in queue, in minutes"}}},"supportedModels":{"type":"array","description":"List of supported models","items":{"type":"string"}}}}},"responses":{"InternalServerError":{"description":"Internal server error","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}}}},"paths":{"/video/status":{"get":{"tags":["Status"],"summary":"Get System Status","operationId":"GetSystemStatus","description":"Get status of the video rendering system\n\n## Response body\n\n| **Property**           | **Type**  | **Description**                                   |\n|-----------------------|----------|-----------------------------------------------------|\n| **isAvailable**            | Boolean   | System availability status                    |\n| **availabilityMessage**    | String    | Availability message                          |\n| **queueState**             | Object    | Queue utilization and job age details         |\n| **queueState.utilization** | Number    | Total jobs (active and pending) divided by scaling group max capacity |\n| **queueState.avgJobAge**   | Number    | Average age of job in queue, in minutes       |\n| **queueState.maxJobAge**   | Number    | Age of oldest job in queue, in minutes        |\n| **supportedModels**        | Array     | List of supported AI models' [short code names](https://docs.topazlabs.com/video-ai/advanced-functions-in-topaz-video-ai/command-line-interface#selecting-models-with-cli-3154) |\n","responses":{"200":{"description":"Successful response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/SystemStatusResponse"}}}},"500":{"$ref":"#/components/responses/InternalServerError"}}}}}}
+```
+
+|# Status
+
+This section grants you system status
+
+## Get System Status
+
+> Get status of the video rendering system\
+> \
+> \## Response body\
+> \
+> \| \*\*Property\*\*           | \*\*Type\*\*  | \*\*Description\*\*                                   |\
+> \|-----------------------|----------|-----------------------------------------------------|\
+> \| \*\*isAvailable\*\*            | Boolean   | System availability status                    |\
+> \| \*\*availabilityMessage\*\*    | String    | Availability message                          |\
+> \| \*\*queueState\*\*             | Object    | Queue utilization and job age details         |\
+> \| \*\*queueState.utilization\*\* | Number    | Total jobs (active and pending) divided by scaling group max capacity |\
+> \| \*\*queueState.avgJobAge\*\*   | Number    | Average age of job in queue, in minutes       |\
+> \| \*\*queueState.maxJobAge\*\*   | Number    | Age of oldest job in queue, in minutes        |\
+> \| \*\*supportedModels\*\*        | Array     | List of supported AI models' \[short code names]\(<https://docs.topazlabs.com/video-ai/advanced-functions-in-topaz-video-ai/command-line-interface#selecting-models-with-cli-3154>) |<br>
+
+```json
+{"openapi":"3.0.3","info":{"title":"Video API","version":"1.0.0"},"tags":[{"name":"Status","description":"This section grants you system status\n"}],"servers":[{"url":"https://api.topazlabs.com","description":"Production API base URL"}],"security":[{"apiKey":[]}],"components":{"securitySchemes":{"apiKey":{"type":"apiKey","in":"header","name":"X-API-Key"}},"schemas":{"SystemStatusResponse":{"type":"object","properties":{"isAvailable":{"type":"boolean"},"availabilityMessage":{"type":"string"},"queueState":{"type":"object","properties":{"utilization":{"type":"number","minimum":0,"maximum":1,"description":"Total jobs (active and pending) divided by scaling group max capacity"},"avgJobAge":{"type":"number","description":"Average age of job in queue, in minutes"},"maxJobAge":{"type":"number","description":"Age of oldest job in queue, in minutes"}}},"supportedModels":{"type":"array","description":"List of supported models","items":{"type":"string"}}}}},"responses":{"InternalServerError":{"description":"Internal server error","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}}}},"paths":{"/video/status":{"get":{"tags":["Status"],"summary":"Get System Status","operationId":"GetSystemStatus","description":"Get status of the video rendering system\n\n## Response body\n\n| **Property**           | **Type**  | **Description**                                   |\n|-----------------------|----------|-----------------------------------------------------|\n| **isAvailable**            | Boolean   | System availability status                    |\n| **availabilityMessage**    | String    | Availability message                          |\n| **queueState**             | Object    | Queue utilization and job age details         |\n| **queueState.utilization** | Number    | Total jobs (active and pending) divided by scaling group max capacity |\n| **queueState.avgJobAge**   | Number    | Average age of job in queue, in minutes       |\n| **queueState.maxJobAge**   | Number    | Age of oldest job in queue, in minutes        |\n| **supportedModels**        | Array     | List of supported AI models' [short code names](https://docs.topazlabs.com/video-ai/advanced-functions-in-topaz-video-ai/command-line-interface#selecting-models-with-cli-3154) |\n","responses":{"200":{"description":"Successful response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/SystemStatusResponse"}}}},"500":{"$ref":"#/components/responses/InternalServerError"}}}}}}
+```
+
+
+# Accept Request
+
+This section allows you to accept the created request and upload
+
+## Accept and Upload Video Request
+
+> Calling this endpoint reserves the estimated credits and returns signed URL(s) for \*\*multi-part upload\*\*.\
+> \
+> \### Video uploads\
+> The Video API uses multi-part upload to receive the video file for processing. You can use a simple byte-division function to create segments for the API to receive.\
+> \
+> For example, if you have a 900MB video file and the system returns 3 upload URLs. You would then:\
+> \
+> \- Upload bytes 0-300,000,000 via HTTP PUT to \`urls\[0]\`\
+> \- Upload bytes 300,000,001-600,000,000 via HTTP PUT to \`urls\[1]\`\
+> \- Upload bytes 600,000,001-900,000,000 via HTTP PUT to \`urls\[2]\`\
+> \
+> If one of the uploads fail, you may reuse the same URL to retry - the action overwrites any partially uploaded data.\
+> \
+> A successful response from the PUT request returns an \`ETag\` value in the header for each segment. Retain the part number and ETag pair for the next step (PATCH /video/{requestId}/complete-upload/).\
+> \
+> \## Response body\
+> \
+> \| \*\*Property\*\*  | \*\*Type\*\*   | \*\*Description\*\*                                     |\
+> \|---------------|------------|-----------------------------------------------------|\
+> \| \*\*uploadId\*\*  | String     | Upload ID for multi-part upload                     |\
+> \| \*\*urls\*\*      | Array      | URLs for multi-part uploads                         |\
+> \| \*\*message\*\*   | String     | Response message                                    |<br>
+
+```json
+{"openapi":"3.0.3","info":{"title":"Video API","version":"1.0.0"},"tags":[{"name":"Accept Request","description":"This section allows you to accept the created request and upload\n"}],"servers":[{"url":"https://api.topazlabs.com","description":"Production API base URL"}],"security":[{"apiKey":[]}],"components":{"securitySchemes":{"apiKey":{"type":"apiKey","in":"header","name":"X-API-Key"}},"schemas":{"AcceptResponse":{"type":"object","properties":{"uploadId":{"type":"string","description":"Upload ID for completing multi-part upload"},"urls":{"type":"array","description":"URLs to PUT the parts to. The source video should be split into urls.length number of byte ranges.","items":{"type":"string"}},"message":{"type":"string","description":"The endpoint will return message only if the video will be sourced from an external storage provider"}}}},"responses":{"Unauthorized":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"PaymentRequired":{"description":"Payment required","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Forbidden":{"description":"Forbidden","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"NotFound":{"description":"Enhancement request with the provided ID not found","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"InternalServerError":{"description":"Internal server error","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"ServiceUnavailable":{"description":"Service unavailable","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}}}},"paths":{"/video/{requestId}/accept":{"patch":{"tags":["Accept Request"],"summary":"Accept and Upload Video Request","operationId":"AcceptVideoRequest","description":"Calling this endpoint reserves the estimated credits and returns signed URL(s) for **multi-part upload**.\n\n### Video uploads\nThe Video API uses multi-part upload to receive the video file for processing. You can use a simple byte-division function to create segments for the API to receive.\n\nFor example, if you have a 900MB video file and the system returns 3 upload URLs. You would then:\n\n- Upload bytes 0-300,000,000 via HTTP PUT to `urls[0]`\n- Upload bytes 300,000,001-600,000,000 via HTTP PUT to `urls[1]`\n- Upload bytes 600,000,001-900,000,000 via HTTP PUT to `urls[2]`\n\nIf one of the uploads fail, you may reuse the same URL to retry - the action overwrites any partially uploaded data.\n\nA successful response from the PUT request returns an `ETag` value in the header for each segment. Retain the part number and ETag pair for the next step (PATCH /video/{requestId}/complete-upload/).\n\n## Response body\n\n| **Property**  | **Type**   | **Description**                                     |\n|---------------|------------|-----------------------------------------------------|\n| **uploadId**  | String     | Upload ID for multi-part upload                     |\n| **urls**      | Array      | URLs for multi-part uploads                         |\n| **message**   | String     | Response message                                    |\n","parameters":[{"in":"path","name":"requestId","schema":{"type":"string","format":"uuid"},"required":true}],"responses":{"202":{"description":"Successful response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/AcceptResponse"}}}},"401":{"$ref":"#/components/responses/Unauthorized"},"402":{"$ref":"#/components/responses/PaymentRequired"},"403":{"$ref":"#/components/responses/Forbidden"},"404":{"$ref":"#/components/responses/NotFound"},"500":{"$ref":"#/components/responses/InternalServerError"},"503":{"$ref":"#/components/responses/ServiceUnavailable"}}}}}}
+```
+
+
+# Complete Upload
+
+This section allows you to complete and confirm a video for processing
+
+## Complete Video Upload
+
+> Send metadata of the multi-part uploads to complete the upload and begin processing the video.\
+> \
+> Optionally include the MD5 hash of the source video file to validate successful upload before processing.\
+> \
+> \## Request body\
+> \
+> \| \*\*Property\*\*    | \*\*Type\*\*         | \*\*Description\*\*                                                                                         |\
+> \|-----------------|------------------|---------------------------------------------------------------------------------------------------------|\
+> \| \*\*uploadResults\*\* | Array          | An array of part number and ETag pairs of the uploaded parts. ETags are returned by S3 upon upload of the part. |\
+> \| \*\*uploadResults.\*.partNum\*\* | Integer    | Part number of the uploaded part, starting from 1                                                      |\
+> \| \*\*uploadResults.\*.eTag\*\*    | String     | eTag value returned by S3 upon upload of the part   <br>
+
+```json
+{"openapi":"3.0.3","info":{"title":"Video API","version":"1.0.0"},"tags":[{"name":"Complete Upload","description":"This section allows you to complete and confirm a video for processing\n"}],"servers":[{"url":"https://api.topazlabs.com","description":"Production API base URL"}],"security":[{"apiKey":[]}],"components":{"securitySchemes":{"apiKey":{"type":"apiKey","in":"header","name":"X-API-Key"}},"requestBodies":{"CompleteUploadRequest":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["uploadResults"],"properties":{"md5Hash":{"type":"string","description":"MD5 hash of the source video file in hex"},"uploadResults":{"type":"array","description":"An array of part number and ETag pairs of the uploaded parts. ETags are returned by S3 upon upload of the part.","items":{"type":"object","required":["partNum","eTag"],"properties":{"partNum":{"type":"integer","description":"Part number of the uploaded part, starting from 1"},"eTag":{"type":"string","description":"eTag value returned by S3 upon upload of the part"}}}}}}}}}},"responses":{"BadRequest":{"description":"Bad request","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Unauthorized":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Forbidden":{"description":"Forbidden","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"NotFound":{"description":"Enhancement request with the provided ID not found","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"InternalServerError":{"description":"Internal server error","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}}}},"paths":{"/video/{requestId}/complete-upload/":{"patch":{"tags":["Complete Upload"],"summary":"Complete Video Upload","operationId":"CompleteVideoUpload","description":"Send metadata of the multi-part uploads to complete the upload and begin processing the video.\n\nOptionally include the MD5 hash of the source video file to validate successful upload before processing.\n\n## Request body\n\n| **Property**    | **Type**         | **Description**                                                                                         |\n|-----------------|------------------|---------------------------------------------------------------------------------------------------------|\n| **uploadResults** | Array          | An array of part number and ETag pairs of the uploaded parts. ETags are returned by S3 upon upload of the part. |\n| **uploadResults.*.partNum** | Integer    | Part number of the uploaded part, starting from 1                                                      |\n| **uploadResults.*.eTag**    | String     | eTag value returned by S3 upon upload of the part   \n","parameters":[{"in":"path","name":"requestId","schema":{"type":"string","format":"uuid"},"required":true}],"requestBody":{"$ref":"#/components/requestBodies/CompleteUploadRequest"},"responses":{"202":{"description":"Successful response","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"400":{"$ref":"#/components/responses/BadRequest"},"401":{"$ref":"#/components/responses/Unauthorized"},"403":{"$ref":"#/components/responses/Forbidden"},"404":{"$ref":"#/components/responses/NotFound"},"500":{"$ref":"#/components/responses/InternalServerError"}}}}}}
+```
+
+# Complete Upload
+
+This section allows you to complete and confirm a video for processing
+
+## Complete Video Upload
+
+> Send metadata of the multi-part uploads to complete the upload and begin processing the video.\
+> \
+> Optionally include the MD5 hash of the source video file to validate successful upload before processing.\
+> \
+> \## Request body\
+> \
+> \| \*\*Property\*\*    | \*\*Type\*\*         | \*\*Description\*\*                                                                                         |\
+> \|-----------------|------------------|---------------------------------------------------------------------------------------------------------|\
+> \| \*\*uploadResults\*\* | Array          | An array of part number and ETag pairs of the uploaded parts. ETags are returned by S3 upon upload of the part. |\
+> \| \*\*uploadResults.\*.partNum\*\* | Integer    | Part number of the uploaded part, starting from 1                                                      |\
+> \| \*\*uploadResults.\*.eTag\*\*    | String     | eTag value returned by S3 upon upload of the part   <br>
+
+```json
+{"openapi":"3.0.3","info":{"title":"Video API","version":"1.0.0"},"tags":[{"name":"Complete Upload","description":"This section allows you to complete and confirm a video for processing\n"}],"servers":[{"url":"https://api.topazlabs.com","description":"Production API base URL"}],"security":[{"apiKey":[]}],"components":{"securitySchemes":{"apiKey":{"type":"apiKey","in":"header","name":"X-API-Key"}},"requestBodies":{"CompleteUploadRequest":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["uploadResults"],"properties":{"md5Hash":{"type":"string","description":"MD5 hash of the source video file in hex"},"uploadResults":{"type":"array","description":"An array of part number and ETag pairs of the uploaded parts. ETags are returned by S3 upon upload of the part.","items":{"type":"object","required":["partNum","eTag"],"properties":{"partNum":{"type":"integer","description":"Part number of the uploaded part, starting from 1"},"eTag":{"type":"string","description":"eTag value returned by S3 upon upload of the part"}}}}}}}}}},"responses":{"BadRequest":{"description":"Bad request","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Unauthorized":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Forbidden":{"description":"Forbidden","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"NotFound":{"description":"Enhancement request with the provided ID not found","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"InternalServerError":{"description":"Internal server error","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}}}},"paths":{"/video/{requestId}/complete-upload/":{"patch":{"tags":["Complete Upload"],"summary":"Complete Video Upload","operationId":"CompleteVideoUpload","description":"Send metadata of the multi-part uploads to complete the upload and begin processing the video.\n\nOptionally include the MD5 hash of the source video file to validate successful upload before processing.\n\n## Request body\n\n| **Property**    | **Type**         | **Description**                                                                                         |\n|-----------------|------------------|---------------------------------------------------------------------------------------------------------|\n| **uploadResults** | Array          | An array of part number and ETag pairs of the uploaded parts. ETags are returned by S3 upon upload of the part. |\n| **uploadResults.*.partNum** | Integer    | Part number of the uploaded part, starting from 1                                                      |\n| **uploadResults.*.eTag**    | String     | eTag value returned by S3 upon upload of the part   \n","parameters":[{"in":"path","name":"requestId","schema":{"type":"string","format":"uuid"},"required":true}],"requestBody":{"$ref":"#/components/requestBodies/CompleteUploadRequest"},"responses":{"202":{"description":"Successful response","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"400":{"$ref":"#/components/responses/BadRequest"},"401":{"$ref":"#/components/responses/Unauthorized"},"403":{"$ref":"#/components/responses/Forbidden"},"404":{"$ref":"#/components/responses/NotFound"},"500":{"$ref":"#/components/responses/InternalServerError"}}}}}}
+```
+
+
+# Delete Files
+
+This section allows you to delete your source and enhanced files
+
+## Delete Video Files
+
+> This endpoint will delete your source and enhanced video files associated with the request from Topaz Labs storage, if any exists.\
+> \
+> Note: All videos are automatically deleted after 7 days.<br>
+
+```json
+{"openapi":"3.0.3","info":{"title":"Video API","version":"1.0.0"},"tags":[{"name":"Delete Files","description":"This section allows you to delete your source and enhanced files\n"}],"servers":[{"url":"https://api.topazlabs.com","description":"Production API base URL"}],"security":[{"apiKey":[]}],"components":{"securitySchemes":{"apiKey":{"type":"apiKey","in":"header","name":"X-API-Key"}},"responses":{"BadRequest":{"description":"Bad request","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Unauthorized":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Forbidden":{"description":"Forbidden","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"NotFound":{"description":"Enhancement request with the provided ID not found","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"InternalServerError":{"description":"Internal server error","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}}}},"paths":{"/video/{requestId}/media":{"delete":{"tags":["Delete Files"],"summary":"Delete Video Files","operationId":"DeleteVideoFiles","description":"This endpoint will delete your source and enhanced video files associated with the request from Topaz Labs storage, if any exists.\n\nNote: All videos are automatically deleted after 7 days.\n","parameters":[{"in":"path","name":"requestId","schema":{"type":"string","format":"uuid"},"required":true}],"responses":{"204":{"description":"Successful response, already canceled or in progress"},"400":{"$ref":"#/components/responses/BadRequest"},"401":{"$ref":"#/components/responses/Unauthorized"},"403":{"$ref":"#/components/responses/Forbidden"},"404":{"$ref":"#/components/responses/NotFound"},"500":{"$ref":"#/components/responses/InternalServerError"}}}}}}
+```
+
+# Get Request Status
+
+This section allows you to get the status of a request
+
+## Get Video Request Status
+
+> Get status of the request.\
+> \
+> If processing is complete, the response will include a signed URL to access the enhanced video.\
+> \
+> Make sure to download and save the video within the TTL provided in the response (24 hours by default). New URLs with new TTL can be generated by calling this endpoint, but we retain your data for only a limited number of days. The video will be permanently deleted from our system afterwards.\
+> \
+> \## Response body\
+> \
+> \| \*\*Property\*\*         | \*\*Type\*\*  | \*\*Description\*\*                                   |\
+> \|---------------------|----------|-----------------------------------------------------|\
+> \| \*\*status\*\*           | String   | Current processing status                          |\
+> \| \*\*progress\*\*         | Number   | Total request progress (percentage)                |\
+> \| \*\*estimates\*\*        | Object   | Refer to \*\*RequestEstimates\*\*                      |\
+> \| \*\*outputSize\*\*       | String   | Size of output video                               |\
+> \| \*\*averageFps\*\*       | Number   | Average FPS of processing nodes                    |\
+> \| \*\*combinedFps\*\*      | Number   | Combined FPS of all nodes                          |\
+> \| \*\*processingJobs\*\*   | Array    | Refer to \*\*VideoProcessingStatIntermediate\*\* below   |\
+> \| \*\*download\*\*         | Object   | Refer to \*\*EnhancedDownloadSignedUrlResponse\*\* below |\
+> \
+> \---\
+> \
+> \#### RequestEstimates\
+> \
+> \`cost\` and \`time\` are arrays with two integers each, representing lower and upper bounds of the estimate.\
+> \
+> \| \*\*Property\*\*  | \*\*Type\*\*  | \*\*Description\*\*                                    |\
+> \|---------------|----------|-----------------------------------------------------|\
+> \| \*\*cost\*\*      | Array    | Cost range (in credits)                             |\
+> \| \*\*time\*\*      | Array    | Time range (in seconds)                             |\
+> \
+> \---\
+> \
+> \#### VideoProcessingStatIntermediate\
+> \
+> \| \*\*Property\*\*         | \*\*Type\*\*  | \*\*Description\*\*                                   |\
+> \|---------------------|----------|-----------------------------------------------------|\
+> \| \*\*chunkId\*\*          | UUID     | Unique chunk identifier                            |\
+> \| \*\*chunkIndex\*\*       | Integer  | Index of the chunk                                 |\
+> \| \*\*taskIndex\*\*        | Integer  | Task index for chunk processing                    |\
+> \| \*\*status\*\*           | String   | Status (queued, processing, complete, etc.)        |\
+> \| \*\*gpuUtilization\*\*   | Integer  | GPU utilization in percentage                      |\
+> \| \*\*gpuMemoryUtilization\*\* | Integer | GPU memory usage percentage                     |\
+> \| \*\*fps\*\*              | Number   | Processing speed of the node                       |\
+> \| \*\*progress\*\*         | Number   | Processing progress (percentage)                   |\
+> \
+> \---\
+> \
+> \#### EnhancedDownloadSignedUrlResponse\
+> \
+> \| \*\*Property\*\*   | \*\*Type\*\*  | \*\*Description\*\*                 |\
+> \|----------------|-----------|---------------------------------|\
+> \| \*\*url\*\*        | String    | Signed download URL for the enhanced file |\
+> \| \*\*expiresIn\*\*  | Integer   | TTL in milliseconds                  |\
+> \| \*\*expiresAt\*\*  | Integer   | Time in milliseconds since UTC epoch |<br>
+
+```json
+{"openapi":"3.0.3","info":{"title":"Video API","version":"1.0.0"},"tags":[{"name":"Get Request Status","description":"This section allows you to get the status of a request\n"}],"servers":[{"url":"https://api.topazlabs.com","description":"Production API base URL"}],"security":[{"apiKey":[]}],"components":{"securitySchemes":{"apiKey":{"type":"apiKey","in":"header","name":"X-API-Key"}},"schemas":{"StatusResponse":{"type":"object","properties":{"status":{"type":"string","enum":["requested","accepted","initializing","preprocessing","processing","postprocessing","complete","canceling","canceled","failed"]},"progress":{"type":"number","description":"Total progress of the request in percentage"},"estimates":{"$ref":"#/components/schemas/RequestEstimates"},"outputSize":{"type":"string"},"averageFps":{"type":"number","description":"Average processing speed of each node"},"combinedFps":{"type":"number","description":"Combined processing speed of all nodes"},"message":{"type":"string"},"processingJobs":{"$ref":"#/components/schemas/ProcessingStatIntermediate"},"download":{"$ref":"#/components/schemas/EnhancedDownloadSignedUrlResponse"}}},"RequestEstimates":{"type":"object","description":"Lower and upper bound estimates","properties":{"cost":{"type":"array","description":"In credits","items":{"type":"integer"}},"time":{"type":"array","description":"In seconds, assuming an empty queue, starting from the time the source video has been received","items":{"type":"integer"}}}},"ProcessingStatIntermediate":{"type":"array","description":"Processing state for each chunk","items":{"type":"object","properties":{"chunkId":{"type":"string","format":"uuid"},"chunkIndex":{"type":"integer","description":"Index of the chunk starting from 0"},"taskIndex":{"type":"integer","description":"Index of a chunk's enhancement task starting from 0"},"status":{"type":"string","enum":["queued","processing","complete","canceled","failed"]},"gpuUtilization":{"type":"number","description":"In percentage"},"gpuMemoryUtilization":{"type":"number","description":"In percentage"},"sampleCount":{"type":"integer","description":"The number of latest processing stat records used in the average calculation"},"currentFrame":{"type":"integer"},"expectedOutputFrames":{"type":"integer","description":"This value and currentFrame is used to calculate the progress %"},"latestLogTs":{"type":"integer","description":"Timestamp of the latest stat record in milliseconds since UTC epoch"},"currentSize":{"type":"integer","description":"In bytes"},"fps":{"type":"number","description":"Processing speed of the node"},"progress":{"type":"number","description":"In percentage"}}}},"EnhancedDownloadSignedUrlResponse":{"type":"object","description":"Signed download URL to the enhanced video file.","properties":{"url":{"type":"string"},"expiresIn":{"type":"integer","description":"TTL in milliseconds"},"expiresAt":{"type":"integer","description":"Time in milliseconds since UTC epoch"}}}},"responses":{"Unauthorized":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Forbidden":{"description":"Forbidden","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"NotFound":{"description":"Enhancement request with the provided ID not found","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"InternalServerError":{"description":"Internal server error","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}}}},"paths":{"/video/{requestId}/status":{"get":{"tags":["Get Request Status"],"summary":"Get Video Request Status","operationId":"GetVideoRequestStatus","description":"Get status of the request.\n\nIf processing is complete, the response will include a signed URL to access the enhanced video.\n\nMake sure to download and save the video within the TTL provided in the response (24 hours by default). New URLs with new TTL can be generated by calling this endpoint, but we retain your data for only a limited number of days. The video will be permanently deleted from our system afterwards.\n\n## Response body\n\n| **Property**         | **Type**  | **Description**                                   |\n|---------------------|----------|-----------------------------------------------------|\n| **status**           | String   | Current processing status                          |\n| **progress**         | Number   | Total request progress (percentage)                |\n| **estimates**        | Object   | Refer to **RequestEstimates**                      |\n| **outputSize**       | String   | Size of output video                               |\n| **averageFps**       | Number   | Average FPS of processing nodes                    |\n| **combinedFps**      | Number   | Combined FPS of all nodes                          |\n| **processingJobs**   | Array    | Refer to **VideoProcessingStatIntermediate** below   |\n| **download**         | Object   | Refer to **EnhancedDownloadSignedUrlResponse** below |\n\n---\n\n#### RequestEstimates\n\n`cost` and `time` are arrays with two integers each, representing lower and upper bounds of the estimate.\n\n| **Property**  | **Type**  | **Description**                                    |\n|---------------|----------|-----------------------------------------------------|\n| **cost**      | Array    | Cost range (in credits)                             |\n| **time**      | Array    | Time range (in seconds)                             |\n\n---\n\n#### VideoProcessingStatIntermediate\n\n| **Property**         | **Type**  | **Description**                                   |\n|---------------------|----------|-----------------------------------------------------|\n| **chunkId**          | UUID     | Unique chunk identifier                            |\n| **chunkIndex**       | Integer  | Index of the chunk                                 |\n| **taskIndex**        | Integer  | Task index for chunk processing                    |\n| **status**           | String   | Status (queued, processing, complete, etc.)        |\n| **gpuUtilization**   | Integer  | GPU utilization in percentage                      |\n| **gpuMemoryUtilization** | Integer | GPU memory usage percentage                     |\n| **fps**              | Number   | Processing speed of the node                       |\n| **progress**         | Number   | Processing progress (percentage)                   |\n\n---\n\n#### EnhancedDownloadSignedUrlResponse\n\n| **Property**   | **Type**  | **Description**                 |\n|----------------|-----------|---------------------------------|\n| **url**        | String    | Signed download URL for the enhanced file |\n| **expiresIn**  | Integer   | TTL in milliseconds                  |\n| **expiresAt**  | Integer   | Time in milliseconds since UTC epoch |\n","parameters":[{"in":"path","name":"requestId","schema":{"type":"string","format":"uuid"},"required":true}],"responses":{"200":{"description":"Successful response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/StatusResponse"}}}},"401":{"$ref":"#/components/responses/Unauthorized"},"403":{"$ref":"#/components/responses/Forbidden"},"404":{"$ref":"#/components/responses/NotFound"},"500":{"$ref":"#/components/responses/InternalServerError"}}}}}}
+```
+
+
+# Get Request Status
+
+This section allows you to get the status of a request
+
+## Get Video Request Status
+
+> Get status of the request.\
+> \
+> If processing is complete, the response will include a signed URL to access the enhanced video.\
+> \
+> Make sure to download and save the video within the TTL provided in the response (24 hours by default). New URLs with new TTL can be generated by calling this endpoint, but we retain your data for only a limited number of days. The video will be permanently deleted from our system afterwards.\
+> \
+> \## Response body\
+> \
+> \| \*\*Property\*\*         | \*\*Type\*\*  | \*\*Description\*\*                                   |\
+> \|---------------------|----------|-----------------------------------------------------|\
+> \| \*\*status\*\*           | String   | Current processing status                          |\
+> \| \*\*progress\*\*         | Number   | Total request progress (percentage)                |\
+> \| \*\*estimates\*\*        | Object   | Refer to \*\*RequestEstimates\*\*                      |\
+> \| \*\*outputSize\*\*       | String   | Size of output video                               |\
+> \| \*\*averageFps\*\*       | Number   | Average FPS of processing nodes                    |\
+> \| \*\*combinedFps\*\*      | Number   | Combined FPS of all nodes                          |\
+> \| \*\*processingJobs\*\*   | Array    | Refer to \*\*VideoProcessingStatIntermediate\*\* below   |\
+> \| \*\*download\*\*         | Object   | Refer to \*\*EnhancedDownloadSignedUrlResponse\*\* below |\
+> \
+> \---\
+> \
+> \#### RequestEstimates\
+> \
+> \`cost\` and \`time\` are arrays with two integers each, representing lower and upper bounds of the estimate.\
+> \
+> \| \*\*Property\*\*  | \*\*Type\*\*  | \*\*Description\*\*                                    |\
+> \|---------------|----------|-----------------------------------------------------|\
+> \| \*\*cost\*\*      | Array    | Cost range (in credits)                             |\
+> \| \*\*time\*\*      | Array    | Time range (in seconds)                             |\
+> \
+> \---\
+> \
+> \#### VideoProcessingStatIntermediate\
+> \
+> \| \*\*Property\*\*         | \*\*Type\*\*  | \*\*Description\*\*                                   |\
+> \|---------------------|----------|-----------------------------------------------------|\
+> \| \*\*chunkId\*\*          | UUID     | Unique chunk identifier                            |\
+> \| \*\*chunkIndex\*\*       | Integer  | Index of the chunk                                 |\
+> \| \*\*taskIndex\*\*        | Integer  | Task index for chunk processing                    |\
+> \| \*\*status\*\*           | String   | Status (queued, processing, complete, etc.)        |\
+> \| \*\*gpuUtilization\*\*   | Integer  | GPU utilization in percentage                      |\
+> \| \*\*gpuMemoryUtilization\*\* | Integer | GPU memory usage percentage                     |\
+> \| \*\*fps\*\*              | Number   | Processing speed of the node                       |\
+> \| \*\*progress\*\*         | Number   | Processing progress (percentage)                   |\
+> \
+> \---\
+> \
+> \#### EnhancedDownloadSignedUrlResponse\
+> \
+> \| \*\*Property\*\*   | \*\*Type\*\*  | \*\*Description\*\*                 |\
+> \|----------------|-----------|---------------------------------|\
+> \| \*\*url\*\*        | String    | Signed download URL for the enhanced file |\
+> \| \*\*expiresIn\*\*  | Integer   | TTL in milliseconds                  |\
+> \| \*\*expiresAt\*\*  | Integer   | Time in milliseconds since UTC epoch |<br>
+
+```json
+{"openapi":"3.0.3","info":{"title":"Video API","version":"1.0.0"},"tags":[{"name":"Get Request Status","description":"This section allows you to get the status of a request\n"}],"servers":[{"url":"https://api.topazlabs.com","description":"Production API base URL"}],"security":[{"apiKey":[]}],"components":{"securitySchemes":{"apiKey":{"type":"apiKey","in":"header","name":"X-API-Key"}},"schemas":{"StatusResponse":{"type":"object","properties":{"status":{"type":"string","enum":["requested","accepted","initializing","preprocessing","processing","postprocessing","complete","canceling","canceled","failed"]},"progress":{"type":"number","description":"Total progress of the request in percentage"},"estimates":{"$ref":"#/components/schemas/RequestEstimates"},"outputSize":{"type":"string"},"averageFps":{"type":"number","description":"Average processing speed of each node"},"combinedFps":{"type":"number","description":"Combined processing speed of all nodes"},"message":{"type":"string"},"processingJobs":{"$ref":"#/components/schemas/ProcessingStatIntermediate"},"download":{"$ref":"#/components/schemas/EnhancedDownloadSignedUrlResponse"}}},"RequestEstimates":{"type":"object","description":"Lower and upper bound estimates","properties":{"cost":{"type":"array","description":"In credits","items":{"type":"integer"}},"time":{"type":"array","description":"In seconds, assuming an empty queue, starting from the time the source video has been received","items":{"type":"integer"}}}},"ProcessingStatIntermediate":{"type":"array","description":"Processing state for each chunk","items":{"type":"object","properties":{"chunkId":{"type":"string","format":"uuid"},"chunkIndex":{"type":"integer","description":"Index of the chunk starting from 0"},"taskIndex":{"type":"integer","description":"Index of a chunk's enhancement task starting from 0"},"status":{"type":"string","enum":["queued","processing","complete","canceled","failed"]},"gpuUtilization":{"type":"number","description":"In percentage"},"gpuMemoryUtilization":{"type":"number","description":"In percentage"},"sampleCount":{"type":"integer","description":"The number of latest processing stat records used in the average calculation"},"currentFrame":{"type":"integer"},"expectedOutputFrames":{"type":"integer","description":"This value and currentFrame is used to calculate the progress %"},"latestLogTs":{"type":"integer","description":"Timestamp of the latest stat record in milliseconds since UTC epoch"},"currentSize":{"type":"integer","description":"In bytes"},"fps":{"type":"number","description":"Processing speed of the node"},"progress":{"type":"number","description":"In percentage"}}}},"EnhancedDownloadSignedUrlResponse":{"type":"object","description":"Signed download URL to the enhanced video file.","properties":{"url":{"type":"string"},"expiresIn":{"type":"integer","description":"TTL in milliseconds"},"expiresAt":{"type":"integer","description":"Time in milliseconds since UTC epoch"}}}},"responses":{"Unauthorized":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Forbidden":{"description":"Forbidden","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"NotFound":{"description":"Enhancement request with the provided ID not found","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"InternalServerError":{"description":"Internal server error","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}}}},"paths":{"/video/{requestId}/status":{"get":{"tags":["Get Request Status"],"summary":"Get Video Request Status","operationId":"GetVideoRequestStatus","description":"Get status of the request.\n\nIf processing is complete, the response will include a signed URL to access the enhanced video.\n\nMake sure to download and save the video within the TTL provided in the response (24 hours by default). New URLs with new TTL can be generated by calling this endpoint, but we retain your data for only a limited number of days. The video will be permanently deleted from our system afterwards.\n\n## Response body\n\n| **Property**         | **Type**  | **Description**                                   |\n|---------------------|----------|-----------------------------------------------------|\n| **status**           | String   | Current processing status                          |\n| **progress**         | Number   | Total request progress (percentage)                |\n| **estimates**        | Object   | Refer to **RequestEstimates**                      |\n| **outputSize**       | String   | Size of output video                               |\n| **averageFps**       | Number   | Average FPS of processing nodes                    |\n| **combinedFps**      | Number   | Combined FPS of all nodes                          |\n| **processingJobs**   | Array    | Refer to **VideoProcessingStatIntermediate** below   |\n| **download**         | Object   | Refer to **EnhancedDownloadSignedUrlResponse** below |\n\n---\n\n#### RequestEstimates\n\n`cost` and `time` are arrays with two integers each, representing lower and upper bounds of the estimate.\n\n| **Property**  | **Type**  | **Description**                                    |\n|---------------|----------|-----------------------------------------------------|\n| **cost**      | Array    | Cost range (in credits)                             |\n| **time**      | Array    | Time range (in seconds)                             |\n\n---\n\n#### VideoProcessingStatIntermediate\n\n| **Property**         | **Type**  | **Description**                                   |\n|---------------------|----------|-----------------------------------------------------|\n| **chunkId**          | UUID     | Unique chunk identifier                            |\n| **chunkIndex**       | Integer  | Index of the chunk                                 |\n| **taskIndex**        | Integer  | Task index for chunk processing                    |\n| **status**           | String   | Status (queued, processing, complete, etc.)        |\n| **gpuUtilization**   | Integer  | GPU utilization in percentage                      |\n| **gpuMemoryUtilization** | Integer | GPU memory usage percentage                     |\n| **fps**              | Number   | Processing speed of the node                       |\n| **progress**         | Number   | Processing progress (percentage)                   |\n\n---\n\n#### EnhancedDownloadSignedUrlResponse\n\n| **Property**   | **Type**  | **Description**                 |\n|----------------|-----------|---------------------------------|\n| **url**        | String    | Signed download URL for the enhanced file |\n| **expiresIn**  | Integer   | TTL in milliseconds                  |\n| **expiresAt**  | Integer   | Time in milliseconds since UTC epoch |\n","parameters":[{"in":"path","name":"requestId","schema":{"type":"string","format":"uuid"},"required":true}],"responses":{"200":{"description":"Successful response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/StatusResponse"}}}},"401":{"$ref":"#/components/responses/Unauthorized"},"403":{"$ref":"#/components/responses/Forbidden"},"404":{"$ref":"#/components/responses/NotFound"},"500":{"$ref":"#/components/responses/InternalServerError"}}}}}}
+```
+
+# Get Request Status
+
+This section allows you to get the status of a request
+
+## Get Video Request Status
+
+> Get status of the request.\
+> \
+> If processing is complete, the response will include a signed URL to access the enhanced video.\
+> \
+> Make sure to download and save the video within the TTL provided in the response (24 hours by default). New URLs with new TTL can be generated by calling this endpoint, but we retain your data for only a limited number of days. The video will be permanently deleted from our system afterwards.\
+> \
+> \## Response body\
+> \
+> \| \*\*Property\*\*         | \*\*Type\*\*  | \*\*Description\*\*                                   |\
+> \|---------------------|----------|-----------------------------------------------------|\
+> \| \*\*status\*\*           | String   | Current processing status                          |\
+> \| \*\*progress\*\*         | Number   | Total request progress (percentage)                |\
+> \| \*\*estimates\*\*        | Object   | Refer to \*\*RequestEstimates\*\*                      |\
+> \| \*\*outputSize\*\*       | String   | Size of output video                               |\
+> \| \*\*averageFps\*\*       | Number   | Average FPS of processing nodes                    |\
+> \| \*\*combinedFps\*\*      | Number   | Combined FPS of all nodes                          |\
+> \| \*\*processingJobs\*\*   | Array    | Refer to \*\*VideoProcessingStatIntermediate\*\* below   |\
+> \| \*\*download\*\*         | Object   | Refer to \*\*EnhancedDownloadSignedUrlResponse\*\* below |\
+> \
+> \---\
+> \
+> \#### RequestEstimates\
+> \
+> \`cost\` and \`time\` are arrays with two integers each, representing lower and upper bounds of the estimate.\
+> \
+> \| \*\*Property\*\*  | \*\*Type\*\*  | \*\*Description\*\*                                    |\
+> \|---------------|----------|-----------------------------------------------------|\
+> \| \*\*cost\*\*      | Array    | Cost range (in credits)                             |\
+> \| \*\*time\*\*      | Array    | Time range (in seconds)                             |\
+> \
+> \---\
+> \
+> \#### VideoProcessingStatIntermediate\
+> \
+> \| \*\*Property\*\*         | \*\*Type\*\*  | \*\*Description\*\*                                   |\
+> \|---------------------|----------|-----------------------------------------------------|\
+> \| \*\*chunkId\*\*          | UUID     | Unique chunk identifier                            |\
+> \| \*\*chunkIndex\*\*       | Integer  | Index of the chunk                                 |\
+> \| \*\*taskIndex\*\*        | Integer  | Task index for chunk processing                    |\
+> \| \*\*status\*\*           | String   | Status (queued, processing, complete, etc.)        |\
+> \| \*\*gpuUtilization\*\*   | Integer  | GPU utilization in percentage                      |\
+> \| \*\*gpuMemoryUtilization\*\* | Integer | GPU memory usage percentage                     |\
+> \| \*\*fps\*\*              | Number   | Processing speed of the node                       |\
+> \| \*\*progress\*\*         | Number   | Processing progress (percentage)                   |\
+> \
+> \---\
+> \
+> \#### EnhancedDownloadSignedUrlResponse\
+> \
+> \| \*\*Property\*\*   | \*\*Type\*\*  | \*\*Description\*\*                 |\
+> \|----------------|-----------|---------------------------------|\
+> \| \*\*url\*\*        | String    | Signed download URL for the enhanced file |\
+> \| \*\*expiresIn\*\*  | Integer   | TTL in milliseconds                  |\
+> \| \*\*expiresAt\*\*  | Integer   | Time in milliseconds since UTC epoch |<br>
+
+```json
+{"openapi":"3.0.3","info":{"title":"Video API","version":"1.0.0"},"tags":[{"name":"Get Request Status","description":"This section allows you to get the status of a request\n"}],"servers":[{"url":"https://api.topazlabs.com","description":"Production API base URL"}],"security":[{"apiKey":[]}],"components":{"securitySchemes":{"apiKey":{"type":"apiKey","in":"header","name":"X-API-Key"}},"schemas":{"StatusResponse":{"type":"object","properties":{"status":{"type":"string","enum":["requested","accepted","initializing","preprocessing","processing","postprocessing","complete","canceling","canceled","failed"]},"progress":{"type":"number","description":"Total progress of the request in percentage"},"estimates":{"$ref":"#/components/schemas/RequestEstimates"},"outputSize":{"type":"string"},"averageFps":{"type":"number","description":"Average processing speed of each node"},"combinedFps":{"type":"number","description":"Combined processing speed of all nodes"},"message":{"type":"string"},"processingJobs":{"$ref":"#/components/schemas/ProcessingStatIntermediate"},"download":{"$ref":"#/components/schemas/EnhancedDownloadSignedUrlResponse"}}},"RequestEstimates":{"type":"object","description":"Lower and upper bound estimates","properties":{"cost":{"type":"array","description":"In credits","items":{"type":"integer"}},"time":{"type":"array","description":"In seconds, assuming an empty queue, starting from the time the source video has been received","items":{"type":"integer"}}}},"ProcessingStatIntermediate":{"type":"array","description":"Processing state for each chunk","items":{"type":"object","properties":{"chunkId":{"type":"string","format":"uuid"},"chunkIndex":{"type":"integer","description":"Index of the chunk starting from 0"},"taskIndex":{"type":"integer","description":"Index of a chunk's enhancement task starting from 0"},"status":{"type":"string","enum":["queued","processing","complete","canceled","failed"]},"gpuUtilization":{"type":"number","description":"In percentage"},"gpuMemoryUtilization":{"type":"number","description":"In percentage"},"sampleCount":{"type":"integer","description":"The number of latest processing stat records used in the average calculation"},"currentFrame":{"type":"integer"},"expectedOutputFrames":{"type":"integer","description":"This value and currentFrame is used to calculate the progress %"},"latestLogTs":{"type":"integer","description":"Timestamp of the latest stat record in milliseconds since UTC epoch"},"currentSize":{"type":"integer","description":"In bytes"},"fps":{"type":"number","description":"Processing speed of the node"},"progress":{"type":"number","description":"In percentage"}}}},"EnhancedDownloadSignedUrlResponse":{"type":"object","description":"Signed download URL to the enhanced video file.","properties":{"url":{"type":"string"},"expiresIn":{"type":"integer","description":"TTL in milliseconds"},"expiresAt":{"type":"integer","description":"Time in milliseconds since UTC epoch"}}}},"responses":{"Unauthorized":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Forbidden":{"description":"Forbidden","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"NotFound":{"description":"Enhancement request with the provided ID not found","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"InternalServerError":{"description":"Internal server error","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}}}},"paths":{"/video/{requestId}/status":{"get":{"tags":["Get Request Status"],"summary":"Get Video Request Status","operationId":"GetVideoRequestStatus","description":"Get status of the request.\n\nIf processing is complete, the response will include a signed URL to access the enhanced video.\n\nMake sure to download and save the video within the TTL provided in the response (24 hours by default). New URLs with new TTL can be generated by calling this endpoint, but we retain your data for only a limited number of days. The video will be permanently deleted from our system afterwards.\n\n## Response body\n\n| **Property**         | **Type**  | **Description**                                   |\n|---------------------|----------|-----------------------------------------------------|\n| **status**           | String   | Current processing status                          |\n| **progress**         | Number   | Total request progress (percentage)                |\n| **estimates**        | Object   | Refer to **RequestEstimates**                      |\n| **outputSize**       | String   | Size of output video                               |\n| **averageFps**       | Number   | Average FPS of processing nodes                    |\n| **combinedFps**      | Number   | Combined FPS of all nodes                          |\n| **processingJobs**   | Array    | Refer to **VideoProcessingStatIntermediate** below   |\n| **download**         | Object   | Refer to **EnhancedDownloadSignedUrlResponse** below |\n\n---\n\n#### RequestEstimates\n\n`cost` and `time` are arrays with two integers each, representing lower and upper bounds of the estimate.\n\n| **Property**  | **Type**  | **Description**                                    |\n|---------------|----------|-----------------------------------------------------|\n| **cost**      | Array    | Cost range (in credits)                             |\n| **time**      | Array    | Time range (in seconds)                             |\n\n---\n\n#### VideoProcessingStatIntermediate\n\n| **Property**         | **Type**  | **Description**                                   |\n|---------------------|----------|-----------------------------------------------------|\n| **chunkId**          | UUID     | Unique chunk identifier                            |\n| **chunkIndex**       | Integer  | Index of the chunk                                 |\n| **taskIndex**        | Integer  | Task index for chunk processing                    |\n| **status**           | String   | Status (queued, processing, complete, etc.)        |\n| **gpuUtilization**   | Integer  | GPU utilization in percentage                      |\n| **gpuMemoryUtilization** | Integer | GPU memory usage percentage                     |\n| **fps**              | Number   | Processing speed of the node                       |\n| **progress**         | Number   | Processing progress (percentage)                   |\n\n---\n\n#### EnhancedDownloadSignedUrlResponse\n\n| **Property**   | **Type**  | **Description**                 |\n|----------------|-----------|---------------------------------|\n| **url**        | String    | Signed download URL for the enhanced file |\n| **expiresIn**  | Integer   | TTL in milliseconds                  |\n| **expiresAt**  | Integer   | Time in milliseconds since UTC epoch |\n","parameters":[{"in":"path","name":"requestId","schema":{"type":"string","format":"uuid"},"required":true}],"responses":{"200":{"description":"Successful response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/StatusResponse"}}}},"401":{"$ref":"#/components/responses/Unauthorized"},"403":{"$ref":"#/components/responses/Forbidden"},"404":{"$ref":"#/components/responses/NotFound"},"500":{"$ref":"#/components/responses/InternalServerError"}}}}}}
+```
+
+# Get Request Status
+
+This section allows you to get the status of a request
+
+## Get Video Request Status
+
+> Get status of the request.\
+> \
+> If processing is complete, the response will include a signed URL to access the enhanced video.\
+> \
+> Make sure to download and save the video within the TTL provided in the response (24 hours by default). New URLs with new TTL can be generated by calling this endpoint, but we retain your data for only a limited number of days. The video will be permanently deleted from our system afterwards.\
+> \
+> \## Response body\
+> \
+> \| \*\*Property\*\*         | \*\*Type\*\*  | \*\*Description\*\*                                   |\
+> \|---------------------|----------|-----------------------------------------------------|\
+> \| \*\*status\*\*           | String   | Current processing status                          |\
+> \| \*\*progress\*\*         | Number   | Total request progress (percentage)                |\
+> \| \*\*estimates\*\*        | Object   | Refer to \*\*RequestEstimates\*\*                      |\
+> \| \*\*outputSize\*\*       | String   | Size of output video                               |\
+> \| \*\*averageFps\*\*       | Number   | Average FPS of processing nodes                    |\
+> \| \*\*combinedFps\*\*      | Number   | Combined FPS of all nodes                          |\
+> \| \*\*processingJobs\*\*   | Array    | Refer to \*\*VideoProcessingStatIntermediate\*\* below   |\
+> \| \*\*download\*\*         | Object   | Refer to \*\*EnhancedDownloadSignedUrlResponse\*\* below |\
+> \
+> \---\
+> \
+> \#### RequestEstimates\
+> \
+> \`cost\` and \`time\` are arrays with two integers each, representing lower and upper bounds of the estimate.\
+> \
+> \| \*\*Property\*\*  | \*\*Type\*\*  | \*\*Description\*\*                                    |\
+> \|---------------|----------|-----------------------------------------------------|\
+> \| \*\*cost\*\*      | Array    | Cost range (in credits)                             |\
+> \| \*\*time\*\*      | Array    | Time range (in seconds)                             |\
+> \
+> \---\
+> \
+> \#### VideoProcessingStatIntermediate\
+> \
+> \| \*\*Property\*\*         | \*\*Type\*\*  | \*\*Description\*\*                                   |\
+> \|---------------------|----------|-----------------------------------------------------|\
+> \| \*\*chunkId\*\*          | UUID     | Unique chunk identifier                            |\
+> \| \*\*chunkIndex\*\*       | Integer  | Index of the chunk                                 |\
+> \| \*\*taskIndex\*\*        | Integer  | Task index for chunk processing                    |\
+> \| \*\*status\*\*           | String   | Status (queued, processing, complete, etc.)        |\
+> \| \*\*gpuUtilization\*\*   | Integer  | GPU utilization in percentage                      |\
+> \| \*\*gpuMemoryUtilization\*\* | Integer | GPU memory usage percentage                     |\
+> \| \*\*fps\*\*              | Number   | Processing speed of the node                       |\
+> \| \*\*progress\*\*         | Number   | Processing progress (percentage)                   |\
+> \
+> \---\
+> \
+> \#### EnhancedDownloadSignedUrlResponse\
+> \
+> \| \*\*Property\*\*   | \*\*Type\*\*  | \*\*Description\*\*                 |\
+> \|----------------|-----------|---------------------------------|\
+> \| \*\*url\*\*        | String    | Signed download URL for the enhanced file |\
+> \| \*\*expiresIn\*\*  | Integer   | TTL in milliseconds                  |\
+> \| \*\*expiresAt\*\*  | Integer   | Time in milliseconds since UTC epoch |<br>
+
+```json
+{"openapi":"3.0.3","info":{"title":"Video API","version":"1.0.0"},"tags":[{"name":"Get Request Status","description":"This section allows you to get the status of a request\n"}],"servers":[{"url":"https://api.topazlabs.com","description":"Production API base URL"}],"security":[{"apiKey":[]}],"components":{"securitySchemes":{"apiKey":{"type":"apiKey","in":"header","name":"X-API-Key"}},"schemas":{"StatusResponse":{"type":"object","properties":{"status":{"type":"string","enum":["requested","accepted","initializing","preprocessing","processing","postprocessing","complete","canceling","canceled","failed"]},"progress":{"type":"number","description":"Total progress of the request in percentage"},"estimates":{"$ref":"#/components/schemas/RequestEstimates"},"outputSize":{"type":"string"},"averageFps":{"type":"number","description":"Average processing speed of each node"},"combinedFps":{"type":"number","description":"Combined processing speed of all nodes"},"message":{"type":"string"},"processingJobs":{"$ref":"#/components/schemas/ProcessingStatIntermediate"},"download":{"$ref":"#/components/schemas/EnhancedDownloadSignedUrlResponse"}}},"RequestEstimates":{"type":"object","description":"Lower and upper bound estimates","properties":{"cost":{"type":"array","description":"In credits","items":{"type":"integer"}},"time":{"type":"array","description":"In seconds, assuming an empty queue, starting from the time the source video has been received","items":{"type":"integer"}}}},"ProcessingStatIntermediate":{"type":"array","description":"Processing state for each chunk","items":{"type":"object","properties":{"chunkId":{"type":"string","format":"uuid"},"chunkIndex":{"type":"integer","description":"Index of the chunk starting from 0"},"taskIndex":{"type":"integer","description":"Index of a chunk's enhancement task starting from 0"},"status":{"type":"string","enum":["queued","processing","complete","canceled","failed"]},"gpuUtilization":{"type":"number","description":"In percentage"},"gpuMemoryUtilization":{"type":"number","description":"In percentage"},"sampleCount":{"type":"integer","description":"The number of latest processing stat records used in the average calculation"},"currentFrame":{"type":"integer"},"expectedOutputFrames":{"type":"integer","description":"This value and currentFrame is used to calculate the progress %"},"latestLogTs":{"type":"integer","description":"Timestamp of the latest stat record in milliseconds since UTC epoch"},"currentSize":{"type":"integer","description":"In bytes"},"fps":{"type":"number","description":"Processing speed of the node"},"progress":{"type":"number","description":"In percentage"}}}},"EnhancedDownloadSignedUrlResponse":{"type":"object","description":"Signed download URL to the enhanced video file.","properties":{"url":{"type":"string"},"expiresIn":{"type":"integer","description":"TTL in milliseconds"},"expiresAt":{"type":"integer","description":"Time in milliseconds since UTC epoch"}}}},"responses":{"Unauthorized":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"Forbidden":{"description":"Forbidden","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"NotFound":{"description":"Enhancement request with the provided ID not found","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}},"InternalServerError":{"description":"Internal server error","content":{"application/json":{"schema":{"type":"object","properties":{"message":{"type":"string"}}}}}}}},"paths":{"/video/{requestId}/status":{"get":{"tags":["Get Request Status"],"summary":"Get Video Request Status","operationId":"GetVideoRequestStatus","description":"Get status of the request.\n\nIf processing is complete, the response will include a signed URL to access the enhanced video.\n\nMake sure to download and save the video within the TTL provided in the response (24 hours by default). New URLs with new TTL can be generated by calling this endpoint, but we retain your data for only a limited number of days. The video will be permanently deleted from our system afterwards.\n\n## Response body\n\n| **Property**         | **Type**  | **Description**                                   |\n|---------------------|----------|-----------------------------------------------------|\n| **status**           | String   | Current processing status                          |\n| **progress**         | Number   | Total request progress (percentage)                |\n| **estimates**        | Object   | Refer to **RequestEstimates**                      |\n| **outputSize**       | String   | Size of output video                               |\n| **averageFps**       | Number   | Average FPS of processing nodes                    |\n| **combinedFps**      | Number   | Combined FPS of all nodes                          |\n| **processingJobs**   | Array    | Refer to **VideoProcessingStatIntermediate** below   |\n| **download**         | Object   | Refer to **EnhancedDownloadSignedUrlResponse** below |\n\n---\n\n#### RequestEstimates\n\n`cost` and `time` are arrays with two integers each, representing lower and upper bounds of the estimate.\n\n| **Property**  | **Type**  | **Description**                                    |\n|---------------|----------|-----------------------------------------------------|\n| **cost**      | Array    | Cost range (in credits)                             |\n| **time**      | Array    | Time range (in seconds)                             |\n\n---\n\n#### VideoProcessingStatIntermediate\n\n| **Property**         | **Type**  | **Description**                                   |\n|---------------------|----------|-----------------------------------------------------|\n| **chunkId**          | UUID     | Unique chunk identifier                            |\n| **chunkIndex**       | Integer  | Index of the chunk                                 |\n| **taskIndex**        | Integer  | Task index for chunk processing                    |\n| **status**           | String   | Status (queued, processing, complete, etc.)        |\n| **gpuUtilization**   | Integer  | GPU utilization in percentage                      |\n| **gpuMemoryUtilization** | Integer | GPU memory usage percentage                     |\n| **fps**              | Number   | Processing speed of the node                       |\n| **progress**         | Number   | Processing progress (percentage)                   |\n\n---\n\n#### EnhancedDownloadSignedUrlResponse\n\n| **Property**   | **Type**  | **Description**                 |\n|----------------|-----------|---------------------------------|\n| **url**        | String    | Signed download URL for the enhanced file |\n| **expiresIn**  | Integer   | TTL in milliseconds                  |\n| **expiresAt**  | Integer   | Time in milliseconds since UTC epoch |\n","parameters":[{"in":"path","name":"requestId","schema":{"type":"string","format":"uuid"},"required":true}],"responses":{"200":{"description":"Successful response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/StatusResponse"}}}},"401":{"$ref":"#/components/responses/Unauthorized"},"403":{"$ref":"#/components/responses/Forbidden"},"404":{"$ref":"#/components/responses/NotFound"},"500":{"$ref":"#/components/responses/InternalServerError"}}}}}}
+```
+
+
+
+
+
+
+
