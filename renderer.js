@@ -350,7 +350,7 @@ function loadConfigToUI() {
     elements.resolution.value = appConfig.resolution || '1920x1080';
     elements.removeAudio.value = appConfig.removeAudio === true ? 'yes' : 'no';
     const configuredWorkers = appConfig.workers || 2; // Changed from 1 to 2
-    maxWorkers = Math.min(configuredWorkers, 20);
+    maxWorkers = Math.min(configuredWorkers, 50);
     if (elements.workers) {
         elements.workers.value = maxWorkers;
     }
@@ -505,7 +505,7 @@ async function selectFolder(type) {
 // Handle workers change
 function handleWorkersChange() {
     const workers = parseInt(elements.workers.value);
-    if (workers >= 1 && workers <= 20) {
+    if (workers >= 1 && workers <= 50) {
         maxWorkers = workers;
         appConfig.workers = workers;
         saveConfig();

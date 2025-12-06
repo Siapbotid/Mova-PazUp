@@ -140,13 +140,29 @@ class TopazAPI {
         return contentTypes[ext] || 'image/jpeg';
     }
     async createVideoRequest(videoInfo, options) {
-        const { width, height } = this.parseResolution(options.resolution);
+        const { width: baseWidth, height: baseHeight } = this.parseResolution(options.resolution);
+
+        // Detect input orientation from actual video dimensions when available
+        const inputWidth = Number(videoInfo.width) || baseWidth;
+        const inputHeight = Number(videoInfo.height) || baseHeight;
+        const inputIsPortrait = inputHeight > inputWidth;
+        const baseIsPortrait = baseHeight > baseWidth;
+
+        // Start from the configured resolution, but swap if needed to match input orientation
+        let outputWidth = baseWidth;
+        let outputHeight = baseHeight;
+        if (inputIsPortrait !== baseIsPortrait) {
+            // Swap width/height so the output stays portrait/landscape like the input
+            outputWidth = baseHeight;
+            outputHeight = baseWidth;
+        }
         
         const requestData = {
             source: {
+                // Use actual input video resolution when available
                 resolution: {
-                    width: 1280,
-                    height: 720
+                    width: inputWidth,
+                    height: inputHeight
                 },
                 container: "mp4",
                 size: 1,
@@ -156,8 +172,8 @@ class TopazAPI {
             },
             output: {
                 resolution: {
-                    width: width,
-                    height: height
+                    width: outputWidth,
+                    height: outputHeight
                 },
                 frameRate: 30,
                 audioTransfer: "None",
