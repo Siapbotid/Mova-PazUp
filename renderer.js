@@ -57,7 +57,6 @@ const elements = {
     removeAudio: document.getElementById('removeAudio'),
     // Image options
     imageModel: document.getElementById('imageModel'),
-    outputFormat: document.getElementById('outputFormat'),
     outputWidth: document.getElementById('outputWidth'),
     imageQuality: document.getElementById('imageQuality'),
     qualityValue: document.getElementById('qualityValue'),
@@ -359,24 +358,14 @@ function loadConfigToUI() {
     if (elements.imageModel) {
         elements.imageModel.value = appConfig.imageModel || 'Standard V2';
     }
-    if (elements.outputFormat) {
-        elements.outputFormat.value = appConfig.outputFormat || 'jpeg';
-    }
     if (elements.outputWidth) {
         elements.outputWidth.value = appConfig.outputWidth || '3840';
     }
     if (elements.imageQuality) {
         elements.imageQuality.value = appConfig.imageQuality || '95';
-        if (elements.outputFormat && elements.outputFormat.value === 'png') {
-            elements.imageQuality.disabled = true;
-            if (elements.qualityValue) {
-                elements.qualityValue.textContent = 'N/A';
-            }
-        } else {
-            elements.imageQuality.disabled = false;
-            if (elements.qualityValue) {
-                elements.qualityValue.textContent = (appConfig.imageQuality || '95') + '%';
-            }
+        elements.imageQuality.disabled = false;
+        if (elements.qualityValue) {
+            elements.qualityValue.textContent = (appConfig.imageQuality || '95') + '%';
         }
     }
 }
@@ -401,7 +390,6 @@ function setupEventListeners() {
     
     // Image options
     elements.imageModel.addEventListener('change', saveConfig);
-    elements.outputFormat.addEventListener('change', handleOutputFormatChange);
     elements.outputWidth.addEventListener('change', handleOutputWidthChange);
     elements.imageQuality.addEventListener('input', handleQualityChange);
     
@@ -472,17 +460,6 @@ function handleQualityChange() {
     saveConfig();
 }
 
-function handleOutputFormatChange() {
-    if (elements.outputFormat.value === 'png') {
-        elements.imageQuality.disabled = true;
-        elements.qualityValue.textContent = 'N/A';
-    } else {
-        elements.imageQuality.disabled = false;
-        elements.qualityValue.textContent = elements.imageQuality.value + '%';
-    }
-    saveConfig();
-}
-
 // Select folder
 async function selectFolder(type) {
     const title = type === 'input' ? 'Select Input Folder' : 'Select Output Folder';
@@ -524,7 +501,6 @@ async function saveConfig() {
     
     // Save image settings
     appConfig.imageModel = elements.imageModel.value;
-    appConfig.outputFormat = elements.outputFormat.value;
     appConfig.outputWidth = elements.outputWidth.value;
     appConfig.imageQuality = elements.imageQuality.value;
     

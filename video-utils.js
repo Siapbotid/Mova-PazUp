@@ -64,7 +64,8 @@ class VideoUtils {
     // Get detailed video info using ffprobe
     static async getDetailedVideoInfo(filePath) {
         return new Promise((resolve, reject) => {
-            const ffprobe = spawn('ffprobe', [
+            const { ffprobe: ffprobePath } = this.getFFmpegPath();
+            const ffprobe = spawn(ffprobePath || 'ffprobe', [
                 '-v', 'quiet',
                 '-print_format', 'json',
                 '-show_format',
@@ -101,13 +102,41 @@ class VideoUtils {
                     const duration = parseFloat(info.format.duration) || 10;
                     const frameRate = this.parseFrameRate(videoStream.r_frame_rate) || 30;
 
+                    // Determine display orientation taking rotation into account when available
+                    const storedWidth = videoStream.width;
+                    const storedHeight = videoStream.height;
+
+                    let rotation = 0;
+                    if (videoStream.tags && videoStream.tags.rotate) {
+                        const parsedRotation = parseInt(videoStream.tags.rotate, 10);
+                        if (!isNaN(parsedRotation)) {
+                            rotation = parsedRotation;
+                        }
+                    } else if (Array.isArray(videoStream.side_data_list)) {
+                        const displayMatrix = videoStream.side_data_list.find(data =>
+                            data && data.side_data_type === 'Display Matrix' && typeof data.rotation === 'number'
+                        );
+                        if (displayMatrix) {
+                            rotation = displayMatrix.rotation;
+                        }
+                    }
+
+                    let displayWidth = storedWidth;
+                    let displayHeight = storedHeight;
+                    const absRotation = Math.abs(rotation) % 360;
+                    if (absRotation === 90 || absRotation === 270) {
+                        displayWidth = storedHeight;
+                        displayHeight = storedWidth;
+                    }
+
                     resolve({
-                        width: videoStream.width,
-                        height: videoStream.height,
+                        width: displayWidth,
+                        height: displayHeight,
                         duration: Math.round(duration),
                         frameRate: frameRate,
                         frameCount: Math.round(duration * frameRate),
-                        container: info.format.format_name.split(',')[0]
+                        container: info.format.format_name.split(',')[0],
+                        rotation: rotation
                     });
                 } catch (parseError) {
                     reject(new Error(`Error parsing ffprobe output: ${parseError.message}`));
@@ -137,7 +166,8 @@ class VideoUtils {
     // Remove audio from video file using ffmpeg
     static async removeAudio(inputPath, outputPath, onProgress) {
         return new Promise((resolve, reject) => {
-            const ffmpeg = spawn('ffmpeg', [
+            const { ffmpeg: ffmpegPath } = this.getFFmpegPath();
+            const ffmpeg = spawn(ffmpegPath || 'ffmpeg', [
                 '-i', inputPath,
                 '-c:v', 'copy',
                 '-an',
